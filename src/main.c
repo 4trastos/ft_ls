@@ -1,4 +1,4 @@
-#include "../incl/ft_ls.h"
+#include "../incl/ft_malloc.h"
 
 int main(int argc, char **argv)
 {
