@@ -1,11 +1,12 @@
-NAME = ft_ls
+NAME = libft_malloc_$HOSTTYPE.so
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra -g
 
 RM = rm -f
 LIB = ar rcs
 
-SRC = src/main.c
+SRC = src/malloc.c src/free.c src/realloc.c src/memory_zone.c lib/aux.c \
+	test/test_malloc.c
 
 OBJS = $(SRC:.c=.o)
 
@@ -24,6 +25,3 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re
-
-
-

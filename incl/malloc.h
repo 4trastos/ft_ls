@@ -1,5 +1,5 @@
-#ifndef FT_MALLOC_H
-# define FT_MALLOC_H
+#ifndef MALLOC_H
+# define MALLOC_H
 
 # include <stdio.h>
 # include <unistd.h>
@@ -11,6 +11,9 @@
 //*** struct functions ***
 
 //*** explicit functions ***
+void    *malloc(size_t size);
+void    free(void *ptr);
+void    *realloc(void *ptr, size_t size);
 
 //*** auxiliary functions ***
 
