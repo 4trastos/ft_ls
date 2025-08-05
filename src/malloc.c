@@ -52,7 +52,7 @@ void    *ft_malloc(size_t size)
         if (!large_head)
             large_head = zone;
         else
-            append_zone(large_head, zone);
+            append_zone(&large_head, zone);
         return ((void *)(block + 1));
 
     }

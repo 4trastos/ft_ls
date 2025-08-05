@@ -40,9 +40,9 @@ typedef struct s_zone
 }   t_zone;
 
 
-t_zone *tiny_head;                  // Zonas para bloques <= TINY
-t_zone *small_head;                 // Zonas para bloques <= SMALL                            
-t_zone *large_head;                 // Zonas para bloques LARGE > 1024 bytes y cada bloque es su propia zona
+extern t_zone *tiny_head;                  // Zonas para bloques <= TINY
+extern t_zone *small_head;                 // Zonas para bloques <= SMALL                            
+extern t_zone *large_head;                 // Zonas para bloques LARGE > 1024 bytes y cada bloque es su propia zona
 
 //*** struct functions ***
 void    append_zone(t_zone **large_head, t_zone *zone);
