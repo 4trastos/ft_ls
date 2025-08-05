@@ -1,5 +1,14 @@
 #include "../incl/malloc.h"
 
+void    append_zone(t_zone **large_head, t_zone *zone)
+{
+    t_zone  *aux;
+    aux = *large_head;
+    while (aux->next)
+        aux = aux->next;
+     aux->next = zone;
+}
+
 size_t round_up_to_page_size(size_t size)
 {
     // 1. Obtener el tamaño de la página del sistema

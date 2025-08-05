@@ -1,6 +1,60 @@
 #include "../incl/malloc.h"
 
+int    find_free_block();   //  recorra las zonas existentes (usando tiny_head o small_head).
+void    create_new_zone();  //  Si la búsqueda falla.  Esta función calculará el tamaño de la nueva zona, la redondeará al tamaño de página y llamará a mmap para asignarla.
+
 void    *ft_malloc(size_t size)
 {
+    size_t          aligned_size;
+    size_t          total_size;
+    unsigned char   *ptr;
+    t_block         *block;
+    t_zone          *zone;
 
+    if (size == 0)
+        return (NULL);
+
+    // 2. Clasificación de la petición
+    if (size <= TINY_MAX_SIZE)
+    {
+        // Lógica para TINY
+        // a) Buscar en las zonas TINY existentes.
+        // b) Si no hay, crear una nueva zona TINY.
+        // c) Retornar el puntero del nuevo bloque.
+    }
+    else if (size <= SMALL_MAX_SIZE)
+    {
+        // Lógica para SMALL
+        // a) Buscar en las zonas SMALL existentes.
+        // b) Si no hay, crear una nueva zona SMALL.
+        // c) Retornar el puntero del nuevo bloque.
+    }
+    else
+    {
+        aligned_size = size + sizeof(t_block) + sizeof(t_zone);
+        total_size = round_up_to_page_size(aligned_size);
+
+        ptr = mmap(NULL, total_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, -1, 0);
+        if (!ptr)
+            return (NULL);
+        
+        zone = (t_zone *)ptr;
+        block = (t_block *)(ptr + sizeof(t_zone));
+
+        zone->head = block;
+        zone->total_size = total_size;
+        zone->next = NULL;
+
+        block->is_free = false;
+        block->size = size;
+        block->next = NULL;
+
+        if (!large_head)
+            large_head = zone;
+        else
+            append_zone(large_head, zone);
+        return ((void *)(block + 1));
+
+    }
+    return (NULL);
 }

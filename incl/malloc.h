@@ -39,11 +39,13 @@ typedef struct s_zone
 
 }   t_zone;
 
-t_zone *tiny_head;
-t_zone *small_head;
-t_zone *large_head;
+
+t_zone *tiny_head;                  // Zonas para bloques <= TINY
+t_zone *small_head;                 // Zonas para bloques <= SMALL                            
+t_zone *large_head;                 // Zonas para bloques LARGE > 1024 bytes y cada bloque es su propia zona
 
 //*** struct functions ***
+void    append_zone(t_zone **large_head, t_zone *zone);
 
 //*** explicit functions ***
 void    *ft_malloc(size_t size);
@@ -52,6 +54,6 @@ void    *ft_realloc(void *ptr, size_t size);
 void    show_alloc_mem(void);
 
 //*** auxiliary functions ***
-size_t    round_up_to_page_size(size_t size);
+size_t  round_up_to_page_size(size_t size);
 
 #endif
