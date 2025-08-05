@@ -1,26 +1,35 @@
 NAME = libft_malloc_$HOSTTYPE.so
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra -g
+CFLAGS = -Wall -Werror -Wextra -fPIC -g
 
 RM = rm -f
-LIB = ar rcs
 
-SRC = src/malloc.c src/free.c src/realloc.c src/memory_zone.c lib/aux.c \
-	test/test_malloc.c
+ifeq ($(HOSTTYPE),)
+	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
+endif
+
+SRC = src/malloc.c src/free.c src/realloc.c src/memory_zone.c lib/aux.c
 
 OBJS = $(SRC:.c=.o)
 
-all: $(NAME)
+all: libft_malloc.so
 
+libft_malloc.so: $(NAME)
+	@ln -sf $(NAME) libft_malloc.so
+
+# Crear el .so con los .o ya compilados
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJS)
+	$(CC) -shared -o $(NAME) $(OBJS)
+
+# Regla general para compilar .o desde .c
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	$(RM) $(OBJS)
 
 fclean: clean
-	$(RM) $(OBJS)
-	$(RM) $(NAME)
+	$(RM) $(NAME) libft_malloc.so
 
 re: fclean all
 
