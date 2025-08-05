@@ -31,10 +31,10 @@ void    *ft_malloc(size_t size)
     }
     else
     {
-        aligned_size = size + sizeof(t_block) + sizeof(t_zone);
-        total_size = round_up_to_page_size(aligned_size);
+        total_size = size + sizeof(t_block) + sizeof(t_zone);
+        aligned_size = round_up_to_page_size(total_size);
 
-        ptr = mmap(NULL, total_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, -1, 0);
+        ptr = mmap(NULL, aligned_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, -1, 0);
         if (!ptr)
             return (NULL);
         
@@ -42,7 +42,7 @@ void    *ft_malloc(size_t size)
         block = (t_block *)(ptr + sizeof(t_zone));
 
         zone->head = block;
-        zone->total_size = total_size;
+        zone->total_size = aligned_size;
         zone->next = NULL;
 
         block->is_free = false;
