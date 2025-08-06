@@ -49,9 +49,9 @@ extern t_zone *large_head;                 // Zonas para bloques LARGE > 1024 by
 void    append_zone(t_zone **large_head, t_zone *zone);
 
 //*** explicit functions ***
-void    *ft_malloc(size_t size);
-void    ft_free(void *ptr);
-void    *ft_realloc(void *ptr, size_t size);
+void    *malloc(size_t size);
+void    free(void *ptr);
+void    *realloc(void *ptr, size_t size);
 void    show_alloc_mem(void);
 size_t  round_up_to_page_size(size_t size);
 

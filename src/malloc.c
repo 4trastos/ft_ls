@@ -4,13 +4,13 @@
 int    find_free_block();   //  recorra las zonas existentes (usando tiny_head o small_head).
 void    create_new_zone();  //  Si la búsqueda falla.  Esta función calculará el tamaño de la nueva zona, la redondeará al tamaño de página y llamará a mmap para asignarla.
 
-void    *ft_malloc(size_t size)
+void    *malloc(size_t size)
 {
+    t_zone          *zone;
+    t_block         *block;
     size_t          aligned_size;
     size_t          total_size;
     unsigned char   *ptr;
-    t_block         *block;
-    t_zone          *zone;
 
     if (size == 0)
         return (NULL);
@@ -36,10 +36,7 @@ void    *ft_malloc(size_t size)
 
         ptr = mmap(NULL, aligned_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
         if (ptr == MAP_FAILED)
-        {
-            perror("ft_malloc: mmap failed");
             return (NULL);
-        }
         
         zone = (t_zone *)ptr;
         block = (t_block *)(ptr + sizeof(t_zone));
