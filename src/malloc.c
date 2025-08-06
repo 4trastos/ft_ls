@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include "../incl/malloc.h"
 
 int    find_free_block();   //  recorra las zonas existentes (usando tiny_head o small_head).
@@ -14,7 +15,6 @@ void    *ft_malloc(size_t size)
     if (size == 0)
         return (NULL);
 
-    // 2. Clasificación de la petición
     if (size <= TINY_MAX_SIZE)
     {
         // Lógica para TINY
@@ -34,9 +34,12 @@ void    *ft_malloc(size_t size)
         total_size = size + sizeof(t_block) + sizeof(t_zone);
         aligned_size = round_up_to_page_size(total_size);
 
-        ptr = mmap(NULL, aligned_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, -1, 0);
-        if (!ptr)
+        ptr = mmap(NULL, aligned_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
+        if (ptr == MAP_FAILED)
+        {
+            perror("ft_malloc: mmap failed");
             return (NULL);
+        }
         
         zone = (t_zone *)ptr;
         block = (t_block *)(ptr + sizeof(t_zone));

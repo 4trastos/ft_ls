@@ -8,6 +8,7 @@
 # include <limits.h>
 # include <stdbool.h>
 # include <sys/mman.h>
+# include <errno.h>
 
 # define TINY_MAX_SIZE  128
 # define SMALL_MAX_SIZE 1024
@@ -52,8 +53,9 @@ void    *ft_malloc(size_t size);
 void    ft_free(void *ptr);
 void    *ft_realloc(void *ptr, size_t size);
 void    show_alloc_mem(void);
+size_t  round_up_to_page_size(size_t size);
 
 //*** auxiliary functions ***
-size_t  round_up_to_page_size(size_t size);
+size_t  ft_strlen(char *str);
 
 #endif

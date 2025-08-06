@@ -5,29 +5,33 @@ CFLAGS = -Wall -Werror -Wextra -fPIC -g
 RM = rm -f
 
 ifeq ($(HOSTTYPE),)
-	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
+    HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
 
 SRC = src/malloc.c src/free.c src/realloc.c src/memory_zone.c lib/aux.c \
-	lib/struct.c
+    src/globals.c 
 
 OBJS = $(SRC:.c=.o)
 
-all: libft_malloc.so
+TEST_EXEC = test_malloc_app
+TEST_SRC = test/test_malloc.c
+
+all: libft_malloc.so $(TEST_EXEC)
 
 libft_malloc.so: $(NAME)
 	@ln -sf $(NAME) libft_malloc.so
 
-# Crear el .so con los .o ya compilados
 $(NAME): $(OBJS)
 	$(CC) -shared -o $(NAME) $(OBJS)
 
-# Regla general para compilar .o desde .c
+$(TEST_EXEC): $(TEST_SRC) libft_malloc.so
+	$(CC) $(CFLAGS) $< -L. -lft_malloc -o $@
+
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	$(RM) $(OBJS)
+	$(RM) $(OBJS) $(TEST_EXEC)
 
 fclean: clean
 	$(RM) $(NAME) libft_malloc.so
