@@ -4,20 +4,21 @@
 void    separate_blocks(t_block *list)
 {
     t_block *aux;
-    t_block *tmp;
+    t_block *next_block;
 
     aux = list;
-    for (size_t i = 0; i < BLOCKS_PER_ZONE; i++)
+    for (size_t i = 0; i < (BLOCKS_PER_ZONE -1); i++)
     {
-        t_block *new;
+        aux->size = TINY_MAX_SIZE;
+        aux->is_free = true;
 
-        aux->next = new;
-        new->is_free = true;
-        new->size = TINY_MAX_SIZE;
-        new->next = NULL;
-        tmp = aux;
+        next_block = (t_block*)((char *)aux + TINY_MAX_SIZE + sizeof(t_block));
+        aux->next = next_block;
+        aux = next_block;
     }
-    return (0);
+    aux->size = TINY_MAX_SIZE;
+    aux->is_free = true;
+    aux->next = NULL;
 }
 
 void   *find_free_block(t_block *block)
@@ -34,8 +35,10 @@ void   *find_free_block(t_block *block)
     return (NULL);
 }
 
-void    *create_new_zone(t_zone *zone, t_block *block, size_t size)
+void    *create_new_zone(size_t size)
 {
+    t_zone          *zone;
+    t_block         *block;
     size_t          aligned_size;
     size_t          total_size;
     unsigned char   *ptr;
@@ -51,16 +54,15 @@ void    *create_new_zone(t_zone *zone, t_block *block, size_t size)
     zone->total_size = aligned_size;
 
     block->size = TINY_MAX_SIZE;
-    block->is_free = false;
     block->next = NULL;
 
-    separate_blocks(tiny_head->head);
+    separate_blocks(zone->head);
 
     if (!tiny_head)
         tiny_head = zone;
     else
         append_zone(&tiny_head, zone);
-    return ((void *)(zone + 1));
+    return ((void *)(zone));
 } 
 
 void    *malloc(size_t size)
@@ -85,19 +87,12 @@ void    *malloc(size_t size)
         }
         else
         {
-            zone = create_new_zone(tiny_head, block, size);
+            zone = create_new_zone(size);
             if (zone == NULL)
                 return (NULL);
             block = zone->head;
             block->is_free = false;
-            return ((void *)(block + 1));
         }
-        if (!tiny_head)
-            tiny_head = zone;
-        else
-            append_zone(&tiny_head, zone);
-        
-        return ((void *)(block + 1));    
     }
     else if (size <= SMALL_MAX_SIZE)
     {
