@@ -53,9 +53,6 @@ void    *create_new_zone(size_t size)
     zone->next = NULL;
     zone->total_size = aligned_size;
 
-    block->size = TINY_MAX_SIZE;
-    block->next = NULL;
-
     separate_blocks(zone->head);
 
     if (!tiny_head)
@@ -78,6 +75,16 @@ void    *malloc(size_t size)
 
     if (size <= TINY_MAX_SIZE)
     {
+        if (!tiny_head)
+        {
+            zone = create_new_zone(size);
+            if (zone == NULL)
+                return (NULL);
+            block = zone->head;
+            block->is_free = false;
+            return ((void *)(block + 1));
+        }
+
         block = find_free_block(tiny_head->head);
 
         if (block != NULL)
@@ -92,6 +99,7 @@ void    *malloc(size_t size)
                 return (NULL);
             block = zone->head;
             block->is_free = false;
+            return((void *)(block + 1));
         }
     }
     else if (size <= SMALL_MAX_SIZE)
@@ -125,7 +133,6 @@ void    *malloc(size_t size)
         else
             append_zone(&large_head, zone);
         return ((void *)(block + 1));
-
     }
     return (NULL);
 }
