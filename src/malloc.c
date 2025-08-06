@@ -17,17 +17,15 @@ void    *malloc(size_t size)
 
     if (size <= TINY_MAX_SIZE)
     {
-        // Lógica para TINY
-        // a) Buscar en las zonas TINY existentes.
-        // b) Si no hay, crear una nueva zona TINY.
-        // c) Retornar el puntero del nuevo bloque.
+        total_size = (TINY_MAX_SIZE + sizeof(t_block) * BLOCKS_PER_ZONE);
+        aligned_size = round_up_to_page_size(total_size);
+        ptr = mmap(NULL, aligned_size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
     }
     else if (size <= SMALL_MAX_SIZE)
     {
-        // Lógica para SMALL
-        // a) Buscar en las zonas SMALL existentes.
-        // b) Si no hay, crear una nueva zona SMALL.
-        // c) Retornar el puntero del nuevo bloque.
+        total_size = (SMALL_MAX_SIZE + sizeof(t_block) * BLOCKS_PER_ZONE);
+        aligned_size = round_up_to_page_size(total_size);
+        ptr = mmap(NULL, aligned_alloc, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
     }
     else
     {
