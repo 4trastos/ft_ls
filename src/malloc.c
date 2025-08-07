@@ -75,6 +75,7 @@ void    *malloc(size_t size)
                 return (NULL);
             block = zone->head;
             block->is_free = false;
+            block->type = TINY;
             return ((void *)(block + 1));
         }
 
@@ -92,6 +93,7 @@ void    *malloc(size_t size)
                 return (NULL);
             block = zone->head;
             block->is_free = false;
+            block->type = TINY;
             return((void *)(block + 1));
         }
     }
@@ -104,6 +106,7 @@ void    *malloc(size_t size)
                 return (NULL);
             block = zone->head;
             block->is_free = false;
+            block->type = SMALL;
             return ((void *)(block + 1));
         }
 
@@ -121,6 +124,7 @@ void    *malloc(size_t size)
                 return (NULL);
             block = zone->head;
             block->is_free = false;
+            block->type = SMALL;
             return ((void *)(block + 1));
         }
     }
@@ -142,6 +146,7 @@ void    *malloc(size_t size)
 
         block->is_free = false;
         block->size = size;
+        block->type = LARGE;
         block->next = NULL;
 
         if (!large_head)

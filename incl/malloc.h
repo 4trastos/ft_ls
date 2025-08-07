@@ -15,35 +15,31 @@
 
 # define BLOCKS_PER_ZONE    100
 
-// El tamaño de la zona se calcula como (tamaño_max + sizeof(t_block)) * num_bloques
-// Esto lo puedes hacer en tiempo de ejecución para no definir una constante.
-// size_t tiny_zone_size = (TINY_MAX_SIZE + sizeof(t_block)) * BLOCKS_PER_ZONE;
-// size_t small_zone_size = (SMALL_MAX_SIZE + sizeof(t_block)) * BLOCKS_PER_ZONE;
-
-// Esta estructura va al principio de cada bloque de memoria asignado (o libre).
-// Contendrá la información necesaria para gestionar el bloque.
+typedef enum
+{
+    TINY,
+    SMALL,
+    LARGE
+}   e_zone_type;
 
 typedef struct s_block
 {
-    size_t              size;       //Tamaño del bloque de memoria (sin incluir el tamaño de la propia struct)
-    bool                is_free;    //Si el bloque está libre o no.
+    size_t              size;    
+    bool                is_free;
+    e_zone_type         type;
     struct s_block      *next;
 }   t_block;
 
-//  Esta estructura gestionará cada zona de memoria que asignes con mmap.
-
 typedef struct s_zone
 {
-    t_block         *head;          // Puntero al primer bloque de la memoria en esta zona
-    size_t          total_size;     // Tamaño total de la zona asignada por nmap.
-    struct s_zone   *next;          // Puntero a la siguiente zona de memoria del mismo tipo (TINY, SMALL, LARGE)
-
+    t_block         *head;
+    size_t          total_size;
+    struct s_zone   *next; 
 }   t_zone;
 
-
-extern t_zone *tiny_head;                  // Zonas para bloques <= TINY
-extern t_zone *small_head;                 // Zonas para bloques <= SMALL                            
-extern t_zone *large_head;                 // Zonas para bloques LARGE > 1024 bytes y cada bloque es su propia zona
+extern t_zone *tiny_head;
+extern t_zone *small_head;                         
+extern t_zone *large_head;
 
 //*** struct functions ***
 void    append_zone(t_zone **large_head, t_zone *zone);
