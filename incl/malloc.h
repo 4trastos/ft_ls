@@ -24,10 +24,10 @@ typedef enum
 
 typedef struct s_block
 {
-    size_t              size;    
-    bool                is_free;
-    e_zone_type         type;
-    struct s_block      *next;
+    size_t          size;    
+    bool            is_free;
+    e_zone_type     type;
+    struct s_block  *next;
 }   t_block;
 
 typedef struct s_zone
@@ -37,9 +37,9 @@ typedef struct s_zone
     struct s_zone   *next; 
 }   t_zone;
 
-extern t_zone *tiny_head;
-extern t_zone *small_head;                         
-extern t_zone *large_head;
+extern t_zone       *tiny_head;
+extern t_zone       *small_head;                         
+extern t_zone       *large_head;
 
 //*** struct functions ***
 void    append_zone(t_zone **large_head, t_zone *zone);
@@ -51,15 +51,16 @@ void    *malloc(size_t size);
 void    free(void *ptr);
 void    *realloc(void *ptr, size_t size);
 void    show_alloc_mem(void);
-size_t  round_up_to_page_size(size_t size);
 void    separate_blocks(t_block *list);
 void    separate_small_blocks(t_block *list);
 void    *find_free_block(t_block *block);
 void    *find_free_small_block(t_block *block);
+size_t  round_up_to_page_size(size_t size);
 t_block *find_freeblocks_small_zones(t_zone *head);
 t_block *find_freeblocks_tiny_zones(t_zone *head);
 
 //*** auxiliary functions ***
 size_t  ft_strlen(char *str);
+void    print_str(char *str);
 
 #endif
