@@ -5,7 +5,6 @@ void show_alloc_mem(void)
     t_zone  *aux_zone;
     t_block *aux_block;
     void    *block_end;
-    //int     i;
 
     if (large_head != NULL)
     {
