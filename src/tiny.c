@@ -20,6 +20,22 @@ void    separate_blocks(t_block *list)
     aux->next = NULL;
 }
 
+t_block *find_freeblocks_tiny_zones(t_zone *head)
+{
+    t_zone  *current_zone;
+    t_block *found_block;
+
+    current_zone = head;
+    while (current_zone != NULL)
+    {
+        found_block = find_free_block(current_zone->head);
+        if (found_block != NULL)
+            return (found_block);
+        current_zone = current_zone->next;
+    }
+    return (NULL);
+}
+
 void   *find_free_block(t_block *block)
 {
     t_block *aux;

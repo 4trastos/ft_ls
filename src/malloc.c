@@ -1,7 +1,7 @@
 #define _GNU_SOURCE
 #include "../incl/malloc.h"
 
-void    *create_new_Szone(size_t size)
+void    *create_new_small_zone(size_t size)
 {
     t_zone          *zone;
     t_block         *block;
@@ -19,12 +19,12 @@ void    *create_new_Szone(size_t size)
     zone->next = NULL;
     zone->total_size = aligned_size;
 
-    separate_Sblocks(zone->head);
+    separate_small_blocks(zone->head);
 
     if (!small_head)
         small_head = zone;
     else
-        append_Szone(&small_head, zone);
+        append_small_zone(&small_head, zone);
     return ((void *)(zone));
 } 
 
@@ -51,7 +51,7 @@ void    *create_new_zone(size_t size)
     if (!tiny_head)
         tiny_head = zone;
     else
-        append_Szone(&tiny_head, zone);
+        append_tiny_zone(&tiny_head, zone);
     return ((void *)(zone));
 } 
 
@@ -78,7 +78,7 @@ void    *malloc(size_t size)
             return ((void *)(block + 1));
         }
 
-        block = find_free_block(tiny_head->head);
+        block = find_freeblocks_tiny_zones(tiny_head);
 
         if (block != NULL)
         {
@@ -99,7 +99,7 @@ void    *malloc(size_t size)
     {
         if (!small_head)
         {
-            zone = create_new_Szone(size);
+            zone = create_new_small_zone(size);
             if (zone == NULL)
                 return (NULL);
             block = zone->head;
@@ -107,17 +107,17 @@ void    *malloc(size_t size)
             return ((void *)(block + 1));
         }
 
-        block = find_free_block(small_head->head);
+        block = find_freeblocks_small_zones(small_head);
 
-        if (!block)
+        if (block != NULL)
         {
             block->is_free = false;
             return((void*)(block + 1));
         }
         else
         {
-            zone = create_new_Szone(size);
-            if (!zone)
+            zone = create_new_small_zone(size);
+            if (zone == NULL) 
                 return (NULL);
             block = zone->head;
             block->is_free = false;

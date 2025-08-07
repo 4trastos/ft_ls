@@ -19,7 +19,7 @@ void    append_zone(t_zone **large_head, t_zone *zone)
      aux->next = zone;
 }
 
-void    append_Szone(t_zone **small_head, t_zone *zone)
+void    append_small_zone(t_zone **small_head, t_zone *zone)
 {
     t_zone  *aux;
     aux = *small_head;
@@ -28,7 +28,7 @@ void    append_Szone(t_zone **small_head, t_zone *zone)
      aux->next = zone;
 }
 
-void    append_Tzone(t_zone **tiny_head, t_zone *zone)
+void    append_tiny_zone(t_zone **tiny_head, t_zone *zone)
 {
     t_zone  *aux;
     aux = *tiny_head;

@@ -47,8 +47,8 @@ extern t_zone *large_head;                 // Zonas para bloques LARGE > 1024 by
 
 //*** struct functions ***
 void    append_zone(t_zone **large_head, t_zone *zone);
-void    append_Szone(t_zone **small_head, t_zone *zone);
-void    append_Tzone(t_zone **tiny_head, t_zone *zone);
+void    append_small_zone(t_zone **small_head, t_zone *zone);
+void    append_tiny_zone(t_zone **tiny_head, t_zone *zone);
 
 //*** explicit functions ***
 void    *malloc(size_t size);
@@ -57,9 +57,11 @@ void    *realloc(void *ptr, size_t size);
 void    show_alloc_mem(void);
 size_t  round_up_to_page_size(size_t size);
 void    separate_blocks(t_block *list);
-void    separate_Sblocks(t_block *list);
-void   *find_free_block(t_block *block);
-void   *find_free_Sblock(t_block *block);
+void    separate_small_blocks(t_block *list);
+void    *find_free_block(t_block *block);
+void    *find_free_small_block(t_block *block);
+t_block *find_freeblocks_small_zones(t_zone *head);
+t_block *find_freeblocks_tiny_zones(t_zone *head);
 
 //*** auxiliary functions ***
 size_t  ft_strlen(char *str);
