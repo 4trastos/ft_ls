@@ -34,6 +34,5 @@ size_t round_up_to_page_size(size_t size)
     page_size = getpagesize();
     num_pages = (size + page_size - 1) / page_size;
 
-    // Devolver el tamaño redondeado
     return (num_pages * page_size);
 }

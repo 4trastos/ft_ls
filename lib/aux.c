@@ -18,3 +18,21 @@ void    append_zone(t_zone **large_head, t_zone *zone)
         aux = aux->next;
      aux->next = zone;
 }
+
+void    append_Szone(t_zone **small_head, t_zone *zone)
+{
+    t_zone  *aux;
+    aux = *small_head;
+    while (aux->next)
+        aux = aux->next;
+     aux->next = zone;
+}
+
+void    append_Tzone(t_zone **tiny_head, t_zone *zone)
+{
+    t_zone  *aux;
+    aux = *tiny_head;
+    while (aux->next)
+        aux = aux->next;
+     aux->next = zone;
+}
