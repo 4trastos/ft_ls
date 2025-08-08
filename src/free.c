@@ -1,23 +1,23 @@
 #include "../incl/malloc.h"
 
-int    search_the_area(t_block *block)
+int    search_the_zone(t_block *block, void *ptr)
 {
     int success;
 
     if (block->type == TINY)
     {
-        success = munmap(tiny_head, sizeof(t_block));
+        success = munmap(ptr, sizeof(t_block));
         if (success == -1)
             return(-1);
         return (0);
     }
-    success = munmap(small_head, sizeof(t_block));
+    success = munmap(ptr, sizeof(t_block));
     if (success == -1)
         return (-1);
     return (0);
 }
 
-void    free(void *ptr)
+void    ft_free(void *ptr)
 {
     t_block *data_block;
     t_block *next_block;
@@ -42,18 +42,18 @@ void    free(void *ptr)
     {
         if (data_block->type == LARGE)
         {
-            sucess = munmap(tiny_head, sizeof(t_block));
+            sucess = munmap(ptr, sizeof(t_block));
             if (sucess == -1)
             {
                 print_str("Error: No se puede liberar");
-                return (NULL);
+                return ;
             }
             return;
         }
-        if (search_the_zone(data_block) == -1)
+        if (search_the_zone(data_block, ptr) == -1)
         {   
             print_str("Error: No se puede liberar");
-            return (NULL);
+            return ;
         }        
         return;
     }

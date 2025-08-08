@@ -2,10 +2,10 @@
 
 int main(void)
 {
-    char *str;
-    //size_t  size_tiny = 126;
-    //size_t  size_small = 1020;
-    size_t  size_large = 6700;
+    char    *str;
+    //size_t  size = 126;
+    //size_t  size = 1020;
+    size_t  size = 6700;
 
     /* if (argc == 1)
     {
@@ -14,7 +14,7 @@ int main(void)
     } */
 
     //str = ft_malloc(ft_strlen(argv[1]) + 1);
-    str = malloc(size_large);
+    str = ft_malloc(size);
     if (!str)
     {
         printf(" ERROR!!!!! FT_MALLOC NO FUNCIONA \n");

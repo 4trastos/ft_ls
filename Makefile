@@ -1,7 +1,6 @@
-NAME = libft_malloc_$HOSTTYPE.so
+NAME = libft_malloc_$(HOSTTYPE).so
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra -fPIC -g
-
 RM = rm -f
 
 ifeq ($(HOSTTYPE),)
@@ -9,7 +8,7 @@ ifeq ($(HOSTTYPE),)
 endif
 
 SRC = src/malloc.c src/free.c src/realloc.c src/memory_zone.c lib/aux.c \
-    src/globals.c 
+      src/globals.c src/tiny.c src/small.c 
 
 OBJS = $(SRC:.c=.o)
 
@@ -25,7 +24,7 @@ $(NAME): $(OBJS)
 	$(CC) -shared -o $(NAME) $(OBJS)
 
 $(TEST_EXEC): $(TEST_SRC) libft_malloc.so
-	$(CC) $(CFLAGS) $< -L. -lft_malloc -o $@
+	$(CC) $(CFLAGS) $< -L. -lft_malloc -Wl,-rpath,'$$ORIGIN' -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@

@@ -1,7 +1,7 @@
 #define _GNU_SOURCE
 #include "../incl/malloc.h"
 
-void    *create_new_small_zone(size_t size)
+void    *create_new_small_zone(void)
 {
     t_zone          *zone;
     t_block         *block;
@@ -9,7 +9,7 @@ void    *create_new_small_zone(size_t size)
     size_t          total_size;
     unsigned char   *ptr;
 
-    total_size = (SMALL_MAX_SIZE + sizeof(t_block) * BLOCKS_PER_ZONE);
+    total_size = ((SMALL_MAX_SIZE + sizeof(t_block)) * BLOCKS_PER_ZONE);
     aligned_size = round_up_to_page_size(total_size);
     ptr = mmap(NULL, aligned_size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
     zone = (t_zone *)ptr;
@@ -28,7 +28,7 @@ void    *create_new_small_zone(size_t size)
     return ((void *)(zone));
 } 
 
-void    *create_new_zone(size_t size)
+void    *create_new_zone(void)
 {
     t_zone          *zone;
     t_block         *block;
@@ -36,7 +36,7 @@ void    *create_new_zone(size_t size)
     size_t          total_size;
     unsigned char   *ptr;
 
-    total_size = (TINY_MAX_SIZE + sizeof(t_block) * BLOCKS_PER_ZONE);
+    total_size = ((TINY_MAX_SIZE + sizeof(t_block)) * BLOCKS_PER_ZONE);
     aligned_size = round_up_to_page_size(total_size);
     ptr = mmap(NULL, aligned_size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
     zone = (t_zone *)ptr;
@@ -55,7 +55,7 @@ void    *create_new_zone(size_t size)
     return ((void *)(zone));
 } 
 
-void    *malloc(size_t size)
+void    *ft_malloc(size_t size)
 {
     t_zone          *zone;
     t_block         *block;
@@ -68,9 +68,10 @@ void    *malloc(size_t size)
 
     if (size <= TINY_MAX_SIZE)
     {
+        printf("###### **** SOY UN TINY ***** #######\n");
         if (!tiny_head)
         {
-            zone = create_new_zone(size);
+            zone = create_new_zone();
             if (zone == NULL)
                 return (NULL);
             block = zone->head;
@@ -88,7 +89,7 @@ void    *malloc(size_t size)
         }
         else
         {
-            zone = create_new_zone(size);
+            zone = create_new_zone();
             if (zone == NULL)
                 return (NULL);
             block = zone->head;
@@ -99,9 +100,10 @@ void    *malloc(size_t size)
     }
     else if (size <= SMALL_MAX_SIZE)
     {
+        printf("###### **** SOY UN SMALL ***** #######\n");
         if (!small_head)
         {
-            zone = create_new_small_zone(size);
+            zone = create_new_small_zone();
             if (zone == NULL)
                 return (NULL);
             block = zone->head;
@@ -119,7 +121,7 @@ void    *malloc(size_t size)
         }
         else
         {
-            zone = create_new_small_zone(size);
+            zone = create_new_small_zone();
             if (zone == NULL) 
                 return (NULL);
             block = zone->head;
@@ -130,6 +132,7 @@ void    *malloc(size_t size)
     }
     else
     {
+        printf("###### **** SOY UN LARGE ***** #######\n");
         total_size = size + sizeof(t_block) + sizeof(t_zone);
         aligned_size = round_up_to_page_size(total_size);
 

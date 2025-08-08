@@ -13,7 +13,7 @@
 # define TINY_MAX_SIZE  128
 # define SMALL_MAX_SIZE 1024
 
-# define BLOCKS_PER_ZONE    100
+# define BLOCKS_PER_ZONE 100
 
 typedef enum
 {
@@ -47,9 +47,9 @@ void    append_small_zone(t_zone **small_head, t_zone *zone);
 void    append_tiny_zone(t_zone **tiny_head, t_zone *zone);
 
 //*** explicit functions ***
-void    *malloc(size_t size);
-void    free(void *ptr);
-void    *realloc(void *ptr, size_t size);
+void    *ft_malloc(size_t size);
+void    ft_free(void *ptr);
+void    *ft_realloc(void *ptr, size_t size);
 void    show_alloc_mem(void);
 void    separate_blocks(t_block *list);
 void    separate_small_blocks(t_block *list);
