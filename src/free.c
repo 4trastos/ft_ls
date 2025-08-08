@@ -25,6 +25,20 @@ void    ft_free(void *ptr)
 
     if (!ptr)
         return;
+
+    data_block = (t_block *)((char *)ptr - sizeof(t_block));
+    data_block->is_free = true;
+
+    if (data_block->type == LARGE)
+    {
+        sucess = munmap(data_block, data_block->size);
+        if (sucess == -1)
+        {
+            perror("Error: No se puede liberar 01");
+            return ;
+        }
+        return;
+    }
     
     // 1. Encontrar el bloque de memoria
     data_block = (t_block *)((char *)ptr - sizeof(t_block));
@@ -38,23 +52,23 @@ void    ft_free(void *ptr)
         data_block->next = next_block->next;
     }
 
-    if (data_block->next == NULL)
+  /*   if (data_block->next == NULL)
     {
         if (data_block->type == LARGE)
         {
-            sucess = munmap(ptr, sizeof(t_block));
+            sucess = munmap(data_block, data_block->size + sizeof(t_block));
             if (sucess == -1)
             {
-                print_str("Error: No se puede liberar");
+                perror("Error: No se puede liberar 01");
                 return ;
             }
             return;
         }
         if (search_the_zone(data_block, ptr) == -1)
         {   
-            print_str("Error: No se puede liberar");
+            print_str("Error: No se puede liberar 02");
             return ;
         }        
         return;
-    }
+    } */
 }

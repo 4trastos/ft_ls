@@ -26,6 +26,13 @@ int main(void)
 
     printf("\n ESTO ES QUE HEMOS GUARDADO EN LA MEMORIA ====>>>> : %s\n", str);
     printf("\n **** MALLOC FUNCIONA PERFECTAMENTE ******** \n");
-    
+    printf("\n **** PASAMOS A LIBERAR LA MEMORIA ******** \n");
+
+    ft_free(str);
+
+    //printf("\n **** MEMORIA LIBERADA ******** \n");
+    //printf("\n **** MOLAMOS MUCHO ******** \n");
+
+
     return (0);
 }
