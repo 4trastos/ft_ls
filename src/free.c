@@ -1,47 +1,61 @@
 #include "../incl/malloc.h"
 
-int    search_the_zone(t_block *block, void *ptr)
+// Función auxiliar para encontrar y desenlazar la zona de la lista LARGE
+void    remove_large_zone(t_zone *zone)
 {
-    int success;
+    t_zone  *prev;
+    t_zone  *current;
 
-    if (block->type == TINY)
+    prev = NULL;
+    current = large_head;
+
+    while (current)
     {
-        success = munmap(ptr, sizeof(t_block));
-        if (success == -1)
-            return(-1);
-        return (0);
+        if (current == zone)
+        {
+            if (prev)
+                prev->next = current->next;
+            else
+                large_head = current->next;
+            return;
+        }
+        prev = current;
+        current = current->next;
     }
-    success = munmap(ptr, sizeof(t_block));
-    if (success == -1)
-        return (-1);
-    return (0);
 }
 
 void    ft_free(void *ptr)
 {
     t_block *data_block;
     t_block *next_block;
+    t_zone  *zone;
     int     sucess;
 
     if (!ptr)
-        return;
-
+    return;
+    
+    // 1. Encontrar el bloque de memoria
     data_block = (t_block *)((char *)ptr - sizeof(t_block));
-    data_block->is_free = true;
+
+    // Zona a la que perteneze
+    zone = (t_zone*)((char *)data_block - sizeof(t_zone));
 
     if (data_block->type == LARGE)
     {
-        sucess = munmap(data_block, data_block->size);
+        // Si es LARGE, desenlazamos y liberamos la zona
+        show_alloc_mem();
+        remove_large_zone(zone);
+        sucess = munmap(zone, zone->total_size);
         if (sucess == -1)
         {
             perror("Error: No se puede liberar 01");
             return ;
         }
+        printf("\n **** MEMORIA LIBERADA ******** \n");
         return;
     }
     
-    // 1. Encontrar el bloque de memoria
-    data_block = (t_block *)((char *)ptr - sizeof(t_block));
+    // 2. Marcar el bloque como libre (TINY/SMALL)
     data_block->is_free = true;
     
     // 3. Fusión de bloques adyacentes
@@ -52,23 +66,7 @@ void    ft_free(void *ptr)
         data_block->next = next_block->next;
     }
 
-  /*   if (data_block->next == NULL)
-    {
-        if (data_block->type == LARGE)
-        {
-            sucess = munmap(data_block, data_block->size + sizeof(t_block));
-            if (sucess == -1)
-            {
-                perror("Error: No se puede liberar 01");
-                return ;
-            }
-            return;
-        }
-        if (search_the_zone(data_block, ptr) == -1)
-        {   
-            print_str("Error: No se puede liberar 02");
-            return ;
-        }        
-        return;
-    } */
+    // 4. Comprobar si toda la zona TINY/SMALL está libre para liberarla
+    // ... (Lógica que aún no has implementado) ...
+  
 }
