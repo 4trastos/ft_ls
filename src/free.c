@@ -1,7 +1,7 @@
 #include "../incl/malloc.h"
 
 // Función auxiliar para encontrar y desenlazar la zona de la lista LARGE
-void    remove_large_zone(t_zone *zone)
+void    remove_large_zone(t_zone *zone_to_remove)
 {
     t_zone  *prev;
     t_zone  *current;
@@ -11,9 +11,9 @@ void    remove_large_zone(t_zone *zone)
 
     while (current)
     {
-        if (current == zone)
+        if (current == zone_to_remove)
         {
-            if (prev)
+            if (prev != NULL)
                 prev->next = current->next;
             else
                 large_head = current->next;
@@ -51,7 +51,6 @@ void    ft_free(void *ptr)
             perror("Error: No se puede liberar 01");
             return ;
         }
-        printf("\n **** MEMORIA LIBERADA ******** \n");
         return;
     }
     

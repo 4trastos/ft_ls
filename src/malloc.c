@@ -132,7 +132,6 @@ void    *ft_malloc(size_t size)
     }
     else
     {
-        printf("###### **** SOY UN LARGE ***** #######\n");
         total_size = size + sizeof(t_block) + sizeof(t_zone);
         aligned_size = round_up_to_page_size(total_size);
 
