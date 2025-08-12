@@ -46,7 +46,7 @@ void    *create_new_zone(size_t size)
     zone->next = NULL;
     zone->total_size = aligned_size;
 
-    separate_blocks(zone->head, size);
+    separate_blocks(zone->head);
 
     if (!tiny_head)
         tiny_head = zone;
@@ -89,7 +89,7 @@ void    *ft_malloc(size_t size)
             return ((void *)(block + 1));
         }
 
-        block = find_freeblocks_tiny_zones(tiny_head);
+        block = find_freeblocks_tiny_zones(zone->head, size);
 
         if (block != NULL)
         {

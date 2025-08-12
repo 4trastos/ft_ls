@@ -1,7 +1,15 @@
-#define _GNU_SOURCE
 #include "../incl/malloc.h"
 
-void    separate_blocks(t_block *list, size_t size)
+void    split_block(t_block *block, size_t size)
+{
+    t_block *new_block;
+    if (block->size > size + sizeof(t_block))
+    {
+        
+    }
+}
+
+void    separate_blocks(t_block *list)
 {
     t_block *aux;
     t_block *next_block;
@@ -9,7 +17,6 @@ void    separate_blocks(t_block *list, size_t size)
     aux = list;
     for (size_t i = 0; i <= BLOCKS_PER_ZONE - 1; i++)
     {
-        printf("###### **** SEPARANDO BLOQUES ===> Bloque Nº:  %ld #######\n", i);
         aux->size = TINY_MAX_SIZE;
         aux->is_free = true;
 
@@ -22,20 +29,20 @@ void    separate_blocks(t_block *list, size_t size)
     aux->next = NULL;
 }
 
-t_block *find_freeblocks_tiny_zones(t_zone *head)
+t_block *find_freeblocks_tiny_zones(t_block *block, size_t size)
 {
-    t_zone  *current_zone;
-    t_block *found_block;
+    t_block *aux;
 
-    current_zone = head;
-    while (current_zone != NULL)
+    aux = block;
+    while (aux != NULL)
     {
-        found_block = find_free_block(current_zone->head);
-        if (found_block != NULL)
-            return (found_block);
-        current_zone = current_zone->next;
+        if (aux->is_free == true && aux->size >= size)
+        {
+            split_block(aux, size);
+            return(aux);
+        }
+        aux = aux->next;
     }
-    return (NULL);
 }
 
 void   *find_free_block(t_block *block)
