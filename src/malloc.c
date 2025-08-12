@@ -28,7 +28,7 @@ void    *create_new_small_zone(void)
     return ((void *)(zone));
 } 
 
-void    *create_new_zone(void)
+void    *create_new_zone(size_t size)
 {
     t_zone          *zone;
     t_block         *block;
@@ -46,7 +46,7 @@ void    *create_new_zone(void)
     zone->next = NULL;
     zone->total_size = aligned_size;
 
-    separate_blocks(zone->head);
+    separate_blocks(zone->head, size);
 
     if (!tiny_head)
         tiny_head = zone;
@@ -57,6 +57,15 @@ void    *create_new_zone(void)
 
 void    *ft_malloc(size_t size)
 {
+
+    /* 1. Recibes una petición de size.
+       2. Si no hay zona TINY, creas una nueva zona con un bloque gigante.
+       3. DIVIDES ese bloque gigante en uno del tamaño size y el resto.
+       4. Le das el bloque de size al usuario.
+       5. Si ya hay una zona, buscas un bloque libre que sea lo suficientemente grande.
+       6. Si lo encuentras, lo divides y se lo das al usuario.
+       7. Si no hay espacio, creas una nueva zona y repites el proceso.
+    */
     t_zone          *zone;
     t_block         *block;
     size_t          aligned_size;
@@ -71,7 +80,7 @@ void    *ft_malloc(size_t size)
         printf("###### **** SOY UN TINY ***** #######\n");
         if (!tiny_head)
         {
-            zone = create_new_zone();
+            zone = create_new_zone(size);
             if (zone == NULL)
                 return (NULL);
             block = zone->head;
@@ -89,7 +98,7 @@ void    *ft_malloc(size_t size)
         }
         else
         {
-            zone = create_new_zone();
+            zone = create_new_zone(size);
             if (zone == NULL)
                 return (NULL);
             block = zone->head;

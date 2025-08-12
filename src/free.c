@@ -43,7 +43,6 @@ void    ft_free(void *ptr)
     if (data_block->type == LARGE)
     {
         // Si es LARGE, desenlazamos y liberamos la zona
-        show_alloc_mem();
         remove_large_zone(zone);
         sucess = munmap(zone, zone->total_size);
         if (sucess == -1)
@@ -51,6 +50,7 @@ void    ft_free(void *ptr)
             perror("Error: No se puede liberar 01");
             return ;
         }
+        printf("\n 4. MEMORIA LIBERADA \n");
         return;
     }
     

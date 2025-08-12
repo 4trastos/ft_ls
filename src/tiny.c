@@ -1,12 +1,13 @@
+#define _GNU_SOURCE
 #include "../incl/malloc.h"
 
-void    separate_blocks(t_block *list)
+void    separate_blocks(t_block *list, size_t size)
 {
     t_block *aux;
     t_block *next_block;
 
     aux = list;
-    for (size_t i = 0; i < BLOCKS_PER_ZONE - 1; i++)
+    for (size_t i = 0; i <= BLOCKS_PER_ZONE - 1; i++)
     {
         printf("###### **** SEPARANDO BLOQUES ===> Bloque Nº:  %ld #######\n", i);
         aux->size = TINY_MAX_SIZE;
