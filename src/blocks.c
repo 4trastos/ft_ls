@@ -37,4 +37,5 @@ t_block *find_and_split_block(t_block *head, size_t size)
         }
         aux = aux->next;
     }
+    return (NULL);
 }

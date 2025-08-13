@@ -2,35 +2,51 @@
 
 int main(int argc, char **argv)
 {
-    char    *str;
-    //(void)argc;
-    //(void)argv;
+    char    *pointer_to_free[MAX_POINTERS];
     //size_t  size = 126;
     //size_t  size = 1020;
     //size_t  size = 6700;
-    size_t size = ft_strlen(argv[1]) + 1;
-
+    size_t  num_pointers = 0;
+    size_t size = 0;
+    size_t  i = 1;
+    
     if (argc == 1)
     {
         write(1, "escribe algo ====>>>>> : \n", 26);
         return (1);
     }
-
-    str = ft_malloc(size);
-    if (!str)
+    
+    while (argv[i] && num_pointers < MAX_POINTERS)
     {
-        printf(" ERROR!!!!! FT_MALLOC NO FUNCIONA \n");
-        return (1);
-    }
-    strcpy(str, argv[1]);
-    printf ("\n1.  Mostrando memoria asignada : \n");
-    printf ("\n");
-    show_alloc_mem();
+        size = ft_strlen(argv[i]) + 1;
+        char *str = ft_malloc(size);
+        if (!str)
+        {
+            printf(" ERROR!!!!! FT_MALLOC NO FUNCIONA \n");
+            return (1);
+        }
+        strcpy(str, argv[i]);
 
-    printf("\n 2. ESTO ES QUE HEMOS GUARDADO EN LA MEMORIA ====>>>> : %s\n", str);
+        pointer_to_free[num_pointers++] = str;
+
+        printf ("\n1.  Mostrando memoria asignada : \n");
+        printf ("\n");
+        show_alloc_mem();
+        printf("\n 2. ESTO ES QUE HEMOS GUARDADO EN LA MEMORIA ====>>>> : %s\n", str);
+        i++;
+    }
+
 
     printf("\n 3. PASAMOS A LIBERAR LA MEMORIA \n");
 
-    ft_free(str);
+    i = 0;
+    while (i < num_pointers)
+    {
+        ft_free(pointer_to_free[i]);
+        i++;
+    }
+    
+    printf("\nMemoria liberada exitosamente.\n");
+
     return (0);
 }

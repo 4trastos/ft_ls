@@ -67,7 +67,6 @@ void    *ft_malloc(size_t size)
 
     if (size <= TINY_MAX_SIZE)
     {
-        printf("###### **** SOY UN TINY ***** #######\n");
         if (!tiny_head)
         {
             zone = create_new_zone(TINY_MAX_SIZE);
@@ -90,7 +89,6 @@ void    *ft_malloc(size_t size)
     }
     else if (size <= SMALL_MAX_SIZE)
     {
-        printf("###### **** SOY UN SMALL ***** #######\n");
         if (!small_head)
         {
             zone = create_new_zone(SMALL_MAX_SIZE);
