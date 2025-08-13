@@ -36,6 +36,8 @@ void    *create_new_zone(size_t len)
     block->size = aligned_size - sizeof(t_zone) - sizeof(t_block);
     block->is_free = true;
     block->next = NULL;
+    block->prev = NULL;
+    block->type = (len == TINY_MAX_SIZE) ? TINY : SMALL;
 
     if (len == TINY_MAX_SIZE)
     {
@@ -135,6 +137,7 @@ void    *ft_malloc(size_t size)
         block->size = size;
         block->type = LARGE;
         block->next = NULL;
+        block->prev = NULL;
 
         if (!large_head)
             large_head = zone;

@@ -30,6 +30,7 @@ typedef struct s_block
     bool            is_free;
     e_zone_type     type;
     struct s_block  *next;
+    struct s_block  *prev;
 }   t_block;
 
 typedef struct s_zone
