@@ -3,9 +3,22 @@
 void    split_block(t_block *block, size_t size)
 {
     t_block *new_block;
+
     if (block->size > size + sizeof(t_block))
     {
-        
+        // Calcular la dirección del nuevo bloque
+        new_block = (t_block*)((char *)block + size + sizeof(t_block));
+
+        // El tamaño del nuevo bloque es lo que nos queda.
+        new_block->size = block->size - size - sizeof(t_block);
+        new_block->is_free = true;
+
+        // Enlazar el nuevo bloque a la lista
+        new_block->next = block->next;
+
+        // Actiualizar el bloque original para que apunte al nuevo.
+        block->size = size;
+        block->next = new_block;
     }
 }
 
