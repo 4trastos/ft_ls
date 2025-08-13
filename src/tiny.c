@@ -42,11 +42,11 @@ void    separate_blocks(t_block *list)
     aux->next = NULL;
 }
 
-t_block *find_freeblocks_tiny_zones(t_block *block, size_t size)
+t_block *find_and_split_block(t_block *head, size_t size)
 {
     t_block *aux;
 
-    aux = block;
+    aux = head;
     while (aux != NULL)
     {
         if (aux->is_free == true && aux->size >= size)

@@ -39,6 +39,9 @@ void    *create_new_zone(size_t size)
     total_size = ((TINY_MAX_SIZE + sizeof(t_block)) * BLOCKS_PER_ZONE);
     aligned_size = round_up_to_page_size(total_size);
     ptr = mmap(NULL, aligned_size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+    if (ptr == NULL)
+        return (NULL);
+    
     zone = (t_zone *)ptr;
     block = (t_block *)(ptr + sizeof(t_zone));
 
@@ -46,7 +49,9 @@ void    *create_new_zone(size_t size)
     zone->next = NULL;
     zone->total_size = aligned_size;
 
-    separate_blocks(zone->head);
+    block->size = aligned_size - sizeof(t_zone) - sizeof(t_block);
+    block->is_free = true;
+    block->next = NULL;
 
     if (!tiny_head)
         tiny_head = zone;
@@ -83,14 +88,17 @@ void    *ft_malloc(size_t size)
             zone = create_new_zone(size);
             if (zone == NULL)
                 return (NULL);
-            block = zone->head;
-            block->is_free = false;
-            block->type = TINY;
-            return ((void *)(block + 1));
+            
+            block = find_and_split_block(tiny_head->head, size);
+            if (block != NULL)
+            {
+                block->is_free = false;
+                block->type = TINY;
+                return ((void *)(block + 1));
+            }
         }
 
         block = find_freeblocks_tiny_zones(zone->head, size);
-
         if (block != NULL)
         {
             block->is_free = false;

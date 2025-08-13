@@ -57,6 +57,7 @@ void    *find_free_block(t_block *block);
 void    *find_free_small_block(t_block *block);
 void    *create_new_zone(size_t size);
 void    split_block(t_block *block, size_t size);
+t_block *find_and_split_block(t_block *head, size_t size);
 size_t  round_up_to_page_size(size_t size);
 t_block *find_freeblocks_small_zones(t_zone *head);
 t_block *find_freeblocks_tiny_zones(t_block *block, size_t size);
