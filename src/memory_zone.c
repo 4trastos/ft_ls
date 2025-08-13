@@ -8,7 +8,7 @@ void show_alloc_mem(void)
 
     if (large_head != NULL)
     {
-        printf("LARGE [Start address of the portion of RAM reserved by the system] : %p\n", (void*)large_head);
+        printf("LARGE [Start of the portion of RAM (zone) reserved by the system] : %p\n", (void*)large_head);
         aux_zone = large_head;
         while (aux_zone != NULL)
         {
@@ -25,7 +25,7 @@ void show_alloc_mem(void)
     }
     else if (small_head != NULL)
     {
-        printf("SMALL [Start address of the portion of RAM reserved by the system] : %p\n", (void*)small_head);
+        printf("SMALL [Start of the portion of RAM (zone) reserved by the system] : %p\n", (void*)small_head);
         aux_zone = small_head;
         while (aux_zone != NULL)
         {
@@ -42,7 +42,7 @@ void show_alloc_mem(void)
     }
     else
     {
-        printf ("TINY [Start address of the portion of RAM reserved by the system] : %p\n", tiny_head);
+        printf ("TINY [Start of the portion of RAM (zone) reserved by the system] : %p\n", tiny_head);
         aux_zone = tiny_head;
         while (aux_zone != NULL)
         {
