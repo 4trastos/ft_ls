@@ -1,6 +1,17 @@
 #define _GNU_SOURCE
 #include "../incl/malloc.h"
 
+size_t round_up_to_page_size(size_t size)
+{
+    size_t  page_size;
+    size_t  num_pages;
+
+    page_size = getpagesize();
+    num_pages = (size + page_size - 1) / page_size;
+
+    return (num_pages * page_size);
+}
+
 void    *create_new_zone(size_t len)
 {
     t_zone          *new_zone;
@@ -62,39 +73,20 @@ void    *ft_malloc(size_t size)
             zone = create_new_zone(TINY_MAX_SIZE);
             if (!zone)
                 return (NULL);
+        }
             
-            block = find_and_split_block(tiny_head->head, size);
-            if (block)
-            {
-                block->is_free = false;
-                block->type = TINY;
-                return ((void *)(block + 1));
-            }
-        }
-        else
+        block = find_and_split_block(tiny_head->head, size);
+        if (!block)
         {
+            zone = create_new_zone(TINY_MAX_SIZE);
+            if (!zone)
+                return (NULL);
             block = find_and_split_block(tiny_head->head, size);
-            if (block)
-            {
-                block->is_free = false;
-                block->type = TINY;
-                return ((void *)(block + 1));
-            }
-            else
-            {
-                zone = create_new_zone(TINY_MAX_SIZE);
-                if (!zone)
-                    return (NULL);
-                
-                block = find_and_split_block(tiny_head->head, size);
-                if (block != NULL)
-                {
-                    block->is_free = false;
-                    block->type = TINY;
-                    return((void *)(block + 1));
-                }
-            }
         }
+
+        block->is_free = false;
+        block->type = TINY;
+        return ((void *)(block + 1));
     }
     else if (size <= SMALL_MAX_SIZE)
     {
@@ -104,39 +96,20 @@ void    *ft_malloc(size_t size)
             zone = create_new_zone(SMALL_MAX_SIZE);
             if (!zone)
                 return (NULL);
-            
-            block = find_and_split_block(small_head->head, size);
-            if (block)
-            {
-                block->is_free = false;
-                block->type = SMALL;
-                return ((void *)(block + 1));
-            }
         }
-        else
+
+        block = find_and_split_block(small_head->head, size);
+        if (!block)
         {
+            zone = create_new_zone(SMALL_MAX_SIZE);
+            if (!zone)
+                return (NULL);
             block = find_and_split_block(small_head->head, size);
-            if (block)
-            {
-                block->is_free = false;
-                block->type = SMALL;
-                return ((void *)(block + 1));
-            }
-            else
-            {
-                zone = create_new_zone(SMALL_MAX_SIZE);
-                if (!zone)
-                    return (NULL);
-    
-                block = find_and_split_block(small_head->head, size);
-                if (block)
-                {
-                    block->is_free = false;
-                    block->type = SMALL;
-                    return ((void *)(block + 1));
-                }
-            }
         }
+
+        block->is_free = false;
+        block->type = SMALL;
+        return ((void *)(block + 1));
     }
     else
     {

@@ -20,6 +20,7 @@ void    split_block(t_block *block, size_t size)
         block->size = size;
         block->next = new_block;
     }
+    return;
 }
 
 t_block *find_and_split_block(t_block *head, size_t size)

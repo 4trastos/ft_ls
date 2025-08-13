@@ -58,14 +58,3 @@ void show_alloc_mem(void)
         }
     }
 }
-
-size_t round_up_to_page_size(size_t size)
-{
-    size_t  page_size;
-    size_t  num_pages;
-
-    page_size = getpagesize();
-    num_pages = (size + page_size - 1) / page_size;
-
-    return (num_pages * page_size);
-}
