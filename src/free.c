@@ -93,7 +93,7 @@ void    ft_free(void *ptr)
         if (data_block->prev != NULL && data_block->prev->is_free == true)
         {
             aux_block = data_block->prev;
-            data_block->size += aux_block->size + sizeof(t_block);
+            aux_block->size += data_block->size + sizeof(t_block);
             aux_block->next = data_block->next;
             if (aux_block->next != NULL)
                 aux_block->next->prev = aux_block;
@@ -102,7 +102,7 @@ void    ft_free(void *ptr)
         }
 
         head_block = zone->head;
-        while (head_block->next != NULL)
+        while (head_block != NULL)
         {
             if (head_block->is_free == false)
                 return;
