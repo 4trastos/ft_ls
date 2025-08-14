@@ -76,7 +76,7 @@ void    remove_large_zone(t_zone *zone_to_remove)
     }
 }
 
-void    ft_free(void *ptr)
+void    free(void *ptr)
 {
     t_block *data_block;
     t_block *aux_block;
@@ -88,11 +88,11 @@ void    ft_free(void *ptr)
     
     // 1. Encontrar el bloque de memoria y la zona a la que pertenece.
     data_block = (t_block *)((char *)ptr - sizeof(t_block));
-    printf("Dirección de data_block (free) : %p\n", data_block);
     zone = find_zone_for_ptr(ptr);
     if (!zone)
-        return;
+    return;
     printf("Dirección de zone (free): %p\n", zone);
+    printf("Dirección de data_block (free) : %p\n", data_block);
 
     if (data_block->type == LARGE)
     {
@@ -113,7 +113,7 @@ void    ft_free(void *ptr)
         if (data_block->next != NULL && data_block->next->is_free == true)
         {
             aux_block = data_block->next;
-            data_block->size += aux_block->size + sizeof(t_block);
+            data_block->size = data_block->size + aux_block->size + sizeof(t_block);
             data_block->next = aux_block->next;
             if (data_block->next != NULL)
                 data_block->next->prev = data_block;
@@ -121,7 +121,7 @@ void    ft_free(void *ptr)
         if (data_block->prev != NULL && data_block->prev->is_free == true)
         {
             aux_block = data_block->prev;
-            aux_block->size += data_block->size + sizeof(t_block);
+            aux_block->size = aux_block->size + data_block->size + sizeof(t_block);
             aux_block->next = data_block->next;
             if (aux_block->next != NULL)
                 aux_block->next->prev = aux_block;

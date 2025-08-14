@@ -19,7 +19,7 @@ int main(int argc, char **argv)
     while (argv[i] && num_pointers < MAX_POINTERS)
     {
         size = ft_strlen(argv[i]) + 1;
-        char *str = ft_malloc(size);
+        char *str = malloc(size);
         if (!str)
         {
             printf(" ERROR!!!!! FT_MALLOC NO FUNCIONA \n");
@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     i = 0;
     while (i < num_pointers)
     {
-        ft_free(pointer_to_free[i]);
+        free(pointer_to_free[i]);
         i++;
     }
     

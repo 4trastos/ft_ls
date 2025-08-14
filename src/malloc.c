@@ -56,7 +56,7 @@ void    *create_new_zone(size_t len)
     return ((void *)(new_zone));
 } 
 
-void    *ft_malloc(size_t size)
+void    *malloc(size_t size)
 {
     t_zone          *zone;
     t_block         *block;

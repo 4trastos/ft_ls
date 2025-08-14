@@ -50,9 +50,9 @@ void    append_small_zone(t_zone **small_head, t_zone *zone);
 void    append_tiny_zone(t_zone **tiny_head, t_zone *zone);
 
 //*** subject functions ***
-void    *ft_malloc(size_t size);
-void    ft_free(void *ptr);
-void    *ft_realloc(void *ptr, size_t size);
+void    *malloc(size_t size);
+void    free(void *ptr);
+void    *realloc(void *ptr, size_t size);
 
 //*** explicit functions ***
 void    show_alloc_mem(void);
@@ -65,5 +65,6 @@ size_t  round_up_to_page_size(size_t size);
 //*** auxiliary functions ***
 size_t  ft_strlen(char *str);
 void    print_str(char *str);
+void    *ft_memcpy(void *dest, const void *src, size_t n);
 
 #endif
