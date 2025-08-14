@@ -49,14 +49,17 @@ void    append_zone(t_zone **large_head, t_zone *zone);
 void    append_small_zone(t_zone **small_head, t_zone *zone);
 void    append_tiny_zone(t_zone **tiny_head, t_zone *zone);
 
-//*** explicit functions ***
+//*** subject functions ***
 void    *ft_malloc(size_t size);
 void    ft_free(void *ptr);
 void    *ft_realloc(void *ptr, size_t size);
+
+//*** explicit functions ***
 void    show_alloc_mem(void);
 void    *create_new_zone(size_t size);
 void    split_block(t_block *block, size_t size);
 t_block *find_and_split_block(t_block *head, size_t size);
+t_zone  *find_zone_for_ptr(void *ptr);
 size_t  round_up_to_page_size(size_t size);
 
 //*** auxiliary functions ***

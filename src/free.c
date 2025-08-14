@@ -88,12 +88,11 @@ void    ft_free(void *ptr)
     
     // 1. Encontrar el bloque de memoria y la zona a la que pertenece.
     data_block = (t_block *)((char *)ptr - sizeof(t_block));
-    printf("Dirección de data_block : %p\n", data_block);
+    printf("Dirección de data_block (free) : %p\n", data_block);
     zone = find_zone_for_ptr(ptr);
     if (!zone)
         return;
-    //zone = (t_zone*)((char *)data_block - sizeof(t_zone));
-    printf("Dirección de zone : %p\n", zone);
+    printf("Dirección de zone (free): %p\n", zone);
 
     if (data_block->type == LARGE)
     {
