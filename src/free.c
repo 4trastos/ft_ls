@@ -1,5 +1,29 @@
 #include "../incl/malloc.h"
 
+t_zone  *find_zone_for_ptr(void *ptr)
+{
+    t_zone  *current;
+
+    current = tiny_head;
+    while (current)
+    {
+        if ((void *)current <= ptr && ptr < (void *)(char *)current + current->total_size)
+            return current;
+        current = current->next;
+    }
+
+    current = small_head;
+    while (current)
+    {
+        if ((void *)current <= ptr && ptr < (void*)(char *)current + current->total_size)
+            return current;
+        current = current->next;
+    }
+    
+    return (NULL);
+    
+}
+
 void    remove_zone_list(t_zone *zone_to_remove)
 {
     t_zone  *prev;
@@ -64,7 +88,12 @@ void    ft_free(void *ptr)
     
     // 1. Encontrar el bloque de memoria y la zona a la que pertenece.
     data_block = (t_block *)((char *)ptr - sizeof(t_block));
-    zone = (t_zone*)((char *)data_block - sizeof(t_zone));
+    printf("Dirección de data_block : %p\n", data_block);
+    zone = find_zone_for_ptr(ptr);
+    if (!zone)
+        return;
+    //zone = (t_zone*)((char *)data_block - sizeof(t_zone));
+    printf("Dirección de zone : %p\n", zone);
 
     if (data_block->type == LARGE)
     {
@@ -72,7 +101,7 @@ void    ft_free(void *ptr)
         remove_large_zone(zone);
         if (munmap(zone, zone->total_size) == -1)
         {
-            perror("Error: No se puede liberar 01");
+            perror("Error: No se puede liberar LARGE");
             return;
         }
         return;
