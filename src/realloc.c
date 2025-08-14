@@ -16,12 +16,13 @@ void    *realloc(void *ptr, size_t size)
         return (NULL);
     }
 
-    block = (t_block *)(char *)ptr - sizeof(t_block);
+    block = (t_block *)((char *)ptr - sizeof(t_block));
     zone = find_zone_for_ptr(ptr);
     if (!zone)
         return (NULL);
-    printf("Dirección de zone (realloc) : %p\n", zone);
-    printf("Dirección de block (realloc): %p\n", block);
+    printf("Dirección de zone       (realloc) : %p\n", zone);
+    printf("Dirección de block      (realloc) : %p\n", block);
+    printf("Tamaño de bytes         (realloc) : %ld\n", size);
 
     if (block->type == LARGE)
     {
@@ -36,7 +37,8 @@ void    *realloc(void *ptr, size_t size)
     {
         if (size > block->size)
         {
-            if (block->next->is_free == true && (block->size + block->next->size + sizeof(t_block)) > size) 
+            if (block->next != NULL && block->next->is_free == true &&
+                (block->size + block->next->size + sizeof(t_block)) > size) 
             {
                 aux_block = block->next;
                 block->size = block->size + aux_block->size + sizeof(t_block);
@@ -58,27 +60,31 @@ void    *realloc(void *ptr, size_t size)
         }
         else if (size < block->size)
         {
-            aux_block = (t_block*)(char *)ptr + size + sizeof(t_block);
-            aux_block->size = block->size - size - sizeof(t_block);
-            aux_block->is_free = true;
-            aux_block->next = block->next;
-            aux_block->prev = block;
-
-            if (aux_block->next != NULL)
-                aux_block->next->prev = aux_block;
-            
-            block->size = size;
-            block->next = aux_block;
-
-            if (aux_block->next != NULL &&  aux_block->next->is_free == true)
-            {
-                aux_block->size = aux_block->size + aux_block->next->size + sizeof(t_block);
-                aux_block->next = aux_block->next->next;
-                if (aux_block->next != NULL)
-                    aux_block->next->prev = aux_block;
-            }
+            if (block->size - size > sizeof(t_block))
+           {
+               aux_block = (t_block*)((char *)block + sizeof(t_block) + size);
+   
+               aux_block->size = block->size - size - sizeof(t_block);
+               aux_block->is_free = true;
+               aux_block->type = block->type;
+               aux_block->next = block->next;
+               aux_block->prev = block;
+   
+               if (aux_block->next != NULL)
+                   aux_block->next->prev = aux_block;
+               
+               block->size = size;
+               block->next = aux_block;
+   
+               if (aux_block->next != NULL &&  aux_block->next->is_free == true)
+               {
+                   aux_block->size = aux_block->size + aux_block->next->size + sizeof(t_block);
+                   aux_block->next = aux_block->next->next;
+                   if (aux_block->next != NULL)
+                       aux_block->next->prev = aux_block;
+               }
+           } 
         }
-        return (ptr);
     }
     return (ptr);
 }

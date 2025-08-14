@@ -24,7 +24,10 @@ void    *create_new_zone(size_t len)
     aligned_size = round_up_to_page_size(total_size);
     ptr = mmap(NULL, aligned_size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
     if (ptr == MAP_FAILED)
+    {
+        print_str("Error: malloc failed to allocate [SIZE] bytes");
         return (NULL);
+    }
     
     new_zone = (t_zone *)ptr;
     block = (t_block *)(ptr + sizeof(t_zone));
@@ -66,7 +69,7 @@ void    *malloc(size_t size)
 
     if (size == 0)
         return (NULL);
-
+    
     if (size <= TINY_MAX_SIZE)
     {
         if (!tiny_head)
@@ -77,6 +80,10 @@ void    *malloc(size_t size)
         }
             
         block = find_and_split_block(tiny_head->head, size);
+        printf("Dirección de zone       (malloc)  : %p\n", zone);
+        printf("Dirección de block      (malloc)  : %p\n", block);
+        printf("Tamaño de bytes         (malloc)  : %ld\n", size);
+
         if (!block)
         {
             zone = create_new_zone(TINY_MAX_SIZE);
@@ -124,7 +131,10 @@ void    *malloc(size_t size)
 
         ptr = mmap(NULL, aligned_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
         if (ptr == MAP_FAILED)
+        {
+            print_str("Error: malloc failed to allocate [SIZE] bytes");
             return (NULL);
+        } 
         
         zone = (t_zone *)ptr;
         block = (t_block *)(ptr + sizeof(t_zone));

@@ -19,6 +19,14 @@ t_zone  *find_zone_for_ptr(void *ptr)
             return current;
         current = current->next;
     }
+
+    current = large_head;
+    while (current)
+    {
+        if ((void *)current <= ptr && ptr < (void*)(char *)current + current->total_size)
+            return current;
+        current = current->next;
+    }
     
     return (NULL);
     
@@ -87,20 +95,32 @@ void    free(void *ptr)
         return;
     
     // 1. Encontrar el bloque de memoria y la zona a la que pertenece.
-    data_block = (t_block *)((char *)ptr - sizeof(t_block));
     zone = find_zone_for_ptr(ptr);
     if (!zone)
-    return;
-    printf("Dirección de zone (free): %p\n", zone);
-    printf("Dirección de data_block (free) : %p\n", data_block);
+    {
+        print_str("*** Error: double free detected or invalid pointer ***");
+        exit(1);
+    }
+
+    data_block = (t_block *)((char *)ptr - sizeof(t_block));
+    if (data_block->is_free == true)
+    {
+        print_str("*** Error: double free detected ***\n");
+        exit(1);
+    }
+    printf("Dirección de zone       (free)    : %p\n", zone);
+    printf("Dirección de data_block (free)    : %p\n", data_block);
+    printf("Tamaño de bytes         (free)    : %ld\n", data_block->size);
 
     if (data_block->type == LARGE)
     {
         // 2. Desenlazar la zona de la lista y liberar (LARGE).
+        printf("Dirección de zone       (free)    : %p\n", zone);
+        printf("Dirección de data_block (free)    : %p\n", data_block);
         remove_large_zone(zone);
         if (munmap(zone, zone->total_size) == -1)
         {
-            perror("Error: No se puede liberar LARGE");
+            print_str("Error: munmap failed for address");
             return;
         }
         return;
@@ -139,6 +159,9 @@ void    free(void *ptr)
         
         remove_zone_list(zone);
         if (munmap(zone, zone->total_size) == -1)
-            perror("Error: No se puede liberar la zona TINY/SMALL");
+        {
+            print_str("Error: munmap failed for address");
+            exit(1);
+        }
     }
 }

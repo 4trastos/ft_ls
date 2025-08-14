@@ -15,8 +15,6 @@
 
 # define BLOCKS_PER_ZONE 100
 
-# define MAX_POINTERS 100000
-
 typedef enum
 {
     TINY,
