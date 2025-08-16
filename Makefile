@@ -19,9 +19,10 @@ all: libft_malloc.so $(TEST_EXEC)
 
 libft_malloc.so: $(NAME)
 	@ln -sf $(NAME) libft_malloc.so
+FT_PRINTF = lib/libftprintf.a
 
 $(NAME): $(OBJS)
-	$(CC) -shared -o $(NAME) $(OBJS)
+	$(CC) -shared -o $(NAME) $(OBJS) $(FT_PRINTF)
 
 $(TEST_EXEC): $(TEST_SRC) libft_malloc.so
 	$(CC) $(CFLAGS) $< -L. -lft_malloc -Wl,-rpath,'$$ORIGIN' -o $@

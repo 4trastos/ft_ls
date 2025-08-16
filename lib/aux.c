@@ -1,4 +1,5 @@
 #include "../incl/malloc.h"
+#include "../incl/ft_printf.h"
 
 void    print_str(char *str)
 {

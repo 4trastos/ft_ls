@@ -1,4 +1,5 @@
 #include "../incl/malloc.h"
+#include "../incl/ft_printf.h"
 
 t_zone  *find_zone_for_ptr(void *ptr)
 {
@@ -7,7 +8,7 @@ t_zone  *find_zone_for_ptr(void *ptr)
     current = tiny_head;
     while (current)
     {
-        if ((void *)current <= ptr && ptr < (void *)(char *)current + current->total_size)
+        if ((void *)current <= ptr && ptr < (void *)((char *)current + current->total_size))
             return current;
         current = current->next;
     }
@@ -15,7 +16,7 @@ t_zone  *find_zone_for_ptr(void *ptr)
     current = small_head;
     while (current)
     {
-        if ((void *)current <= ptr && ptr < (void*)(char *)current + current->total_size)
+        if ((void *)current <= ptr && ptr < (void*)((char *)current + current->total_size))
             return current;
         current = current->next;
     }
@@ -23,7 +24,7 @@ t_zone  *find_zone_for_ptr(void *ptr)
     current = large_head;
     while (current)
     {
-        if ((void *)current <= ptr && ptr < (void*)(char *)current + current->total_size)
+        if ((void *)current <= ptr && ptr < (void*)((char *)current + current->total_size))
             return current;
         current = current->next;
     }
@@ -102,21 +103,23 @@ void    free(void *ptr)
         exit(1);
     }
 
-    data_block = (t_block *)((char *)ptr - sizeof(t_block));
+    ft_printf("Dirección de zone       (free)          : %p\n", zone);
+    ft_printf("Dirección que recibe free               : %p\n", ptr);
+    data_block = (t_block *)((char *)ptr - BLOCK_OFFSET);
+    ft_printf("Dirección del bloque de metadatos (free): %p\n", data_block);
+    ft_printf("Tamaño de bytes         (free)          : %d\n", data_block->size);
     if (data_block->is_free == true)
     {
         print_str("*** Error: double free detected ***\n");
         exit(1);
     }
-    printf("Dirección de zone       (free)    : %p\n", zone);
-    printf("Dirección de data_block (free)    : %p\n", data_block);
-    printf("Tamaño de bytes         (free)    : %ld\n", data_block->size);
 
     if (data_block->type == LARGE)
     {
         // 2. Desenlazar la zona de la lista y liberar (LARGE).
-        printf("Dirección de zone       (free)    : %p\n", zone);
-        printf("Dirección de data_block (free)    : %p\n", data_block);
+        ft_printf("Dirección de zone       (free)    : %p\n", zone);
+        ft_printf("Dirección de data_block (free)    : %p\n", data_block);
+        ft_printf("Tamaño de bytes         (free)    : %d\n", data_block->size);
         remove_large_zone(zone);
         if (munmap(zone, zone->total_size) == -1)
         {
@@ -133,7 +136,7 @@ void    free(void *ptr)
         if (data_block->next != NULL && data_block->next->is_free == true)
         {
             aux_block = data_block->next;
-            data_block->size = data_block->size + aux_block->size + sizeof(t_block);
+            data_block->size = data_block->size + aux_block->size + BLOCK_OFFSET;
             data_block->next = aux_block->next;
             if (data_block->next != NULL)
                 data_block->next->prev = data_block;
@@ -141,7 +144,7 @@ void    free(void *ptr)
         if (data_block->prev != NULL && data_block->prev->is_free == true)
         {
             aux_block = data_block->prev;
-            aux_block->size = aux_block->size + data_block->size + sizeof(t_block);
+            aux_block->size = aux_block->size + data_block->size + BLOCK_OFFSET;
             aux_block->next = data_block->next;
             if (aux_block->next != NULL)
                 aux_block->next->prev = aux_block;

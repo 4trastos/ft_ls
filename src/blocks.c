@@ -1,4 +1,5 @@
 #include "../incl/malloc.h"
+#include "../incl/ft_printf.h"
 
 void    split_block(t_block *block, size_t size)
 {
@@ -6,13 +7,13 @@ void    split_block(t_block *block, size_t size)
 
     size = (size + sizeof(void*) - 1) & ~(sizeof(void*) - 1);
 
-    if (block->size > size + sizeof(t_block))
+    if (block->size > size + BLOCK_OFFSET)
     {
         // Calcular la dirección del nuevo bloque
-        new_block = (t_block*)((char *)block + size + sizeof(t_block));
+        new_block = (t_block*)((char *)block + size + BLOCK_OFFSET);
 
         // El tamaño del nuevo bloque es lo que nos queda.
-        new_block->size = block->size - size - sizeof(t_block);
+        new_block->size = block->size - size - BLOCK_OFFSET;
         new_block->is_free = true;
         new_block->type = block->type;
 

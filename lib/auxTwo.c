@@ -1,17 +1,11 @@
 #include "../incl/malloc.h"
+#include "../incl/ft_printf.h"
 
-void    *ft_memcpy(void *dest, const void *src, size_t n)
+void    *ft_memcpy(void *dst, const void *src, size_t n)
 {
-    unsigned char       *d;
-    const unsigned char *s;
-
-    d = dest;
-    s = src;
+    char *d = dst;
+    const char *s = src;
     while (n--)
-    {
-        *d = *s;
-        d++;
-        s++;
-    }
-    return (dest);
+        *d++ = *s++;
+    return (dst);
 }

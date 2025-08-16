@@ -10,6 +10,8 @@
 # include <sys/mman.h>
 # include <errno.h>
 
+# define BLOCK_OFFSET 32
+
 # define TINY_MAX_SIZE  128
 # define SMALL_MAX_SIZE 1024
 

@@ -1,4 +1,5 @@
 #include "../incl/malloc.h"
+#include "../incl/ft_printf.h"
 
 void    *realloc(void *ptr, size_t size)
 {
@@ -16,13 +17,13 @@ void    *realloc(void *ptr, size_t size)
         return (NULL);
     }
 
-    block = (t_block *)((char *)ptr - sizeof(t_block));
+    block = (t_block *)((char *)ptr - BLOCK_OFFSET);
     zone = find_zone_for_ptr(ptr);
     if (!zone)
         return (NULL);
-    printf("Dirección de zone       (realloc) : %p\n", zone);
-    printf("Dirección de block      (realloc) : %p\n", block);
-    printf("Tamaño de bytes         (realloc) : %ld\n", size);
+    ft_printf("Dirección de zone       (realloc) : %p\n", zone);
+    ft_printf("Dirección de block      (realloc) : %p\n", block);
+    ft_printf("Tamaño de bytes         (realloc) : %d\n", size);
 
     if (block->type == LARGE)
     {
@@ -38,10 +39,10 @@ void    *realloc(void *ptr, size_t size)
         if (size > block->size)
         {
             if (block->next != NULL && block->next->is_free == true &&
-                (block->size + block->next->size + sizeof(t_block)) > size) 
+                (block->size + block->next->size + BLOCK_OFFSET) > size) 
             {
                 aux_block = block->next;
-                block->size = block->size + aux_block->size + sizeof(t_block);
+                block->size = block->size + aux_block->size + BLOCK_OFFSET;
                 block->next = aux_block->next;
                 if (block->next != NULL)
                     block->next->prev = block;
@@ -60,11 +61,11 @@ void    *realloc(void *ptr, size_t size)
         }
         else if (size < block->size)
         {
-            if (block->size - size > sizeof(t_block))
+            if (block->size - size > BLOCK_OFFSET)
            {
-               aux_block = (t_block*)((char *)block + sizeof(t_block) + size);
+               aux_block = (t_block*)((char *)block + BLOCK_OFFSET + size);
    
-               aux_block->size = block->size - size - sizeof(t_block);
+               aux_block->size = block->size - size - BLOCK_OFFSET;
                aux_block->is_free = true;
                aux_block->type = block->type;
                aux_block->next = block->next;
@@ -78,7 +79,7 @@ void    *realloc(void *ptr, size_t size)
    
                if (aux_block->next != NULL &&  aux_block->next->is_free == true)
                {
-                   aux_block->size = aux_block->size + aux_block->next->size + sizeof(t_block);
+                   aux_block->size = aux_block->size + aux_block->next->size + BLOCK_OFFSET;
                    aux_block->next = aux_block->next->next;
                    if (aux_block->next != NULL)
                        aux_block->next->prev = aux_block;

@@ -1,5 +1,6 @@
 #define _GNU_SOURCE
 #include "../incl/malloc.h"
+#include "../incl/ft_printf.h"
 
 size_t round_up_to_page_size(size_t size)
 {
@@ -20,7 +21,7 @@ void    *create_new_zone(size_t len)
     size_t          total_size;
     unsigned char   *ptr;
 
-    total_size = ((len + sizeof(t_block)) * BLOCKS_PER_ZONE);
+    total_size = ((len + BLOCK_OFFSET) * BLOCKS_PER_ZONE);
     aligned_size = round_up_to_page_size(total_size);
     ptr = mmap(NULL, aligned_size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
     if (ptr == MAP_FAILED)
@@ -30,13 +31,13 @@ void    *create_new_zone(size_t len)
     }
     
     new_zone = (t_zone *)ptr;
-    block = (t_block *)(ptr + sizeof(t_zone));
+    block = (t_block *)((char *)ptr + sizeof(t_zone));
 
     new_zone->head = block;
     new_zone->next = NULL;
     new_zone->total_size = aligned_size;
 
-    block->size = aligned_size - sizeof(t_zone) - sizeof(t_block);
+    block->size = aligned_size - sizeof(t_zone) - BLOCK_OFFSET;
     block->is_free = true;
     block->next = NULL;
     block->prev = NULL;
@@ -80,9 +81,9 @@ void    *malloc(size_t size)
         }
             
         block = find_and_split_block(tiny_head->head, size);
-        printf("Dirección de zone       (malloc)  : %p\n", zone);
-        printf("Dirección de block      (malloc)  : %p\n", block);
-        printf("Tamaño de bytes         (malloc)  : %ld\n", size);
+        ft_printf("Dirección de zone       (malloc)  : %p\n", zone);
+        ft_printf("Dirección de block      (malloc)  : %p\n", block);
+        ft_printf("Tamaño de bytes         (malloc)  : %d\n", size);
 
         if (!block)
         {
@@ -95,7 +96,8 @@ void    *malloc(size_t size)
         {
             block->is_free = false;
             block->type = TINY;
-            return ((void *)(block + 1));
+            ft_printf("Dirección que se devuelve a la aplicación: %p\n", (void *)((char *)block + BLOCK_OFFSET));
+            return ((void *)((char *)block + BLOCK_OFFSET));
         }
         return (NULL);
     }
@@ -120,13 +122,14 @@ void    *malloc(size_t size)
         {
             block->is_free = false;
             block->type = SMALL;
-            return ((void *)(block + 1));
+            ft_printf("Dirección que se devuelve a la aplicación: %p\n", (void *)((char *)block + BLOCK_OFFSET));
+            return ((void *)((char *)block + BLOCK_OFFSET));
         }
         return (NULL);
     }
     else
     {
-        total_size = size + sizeof(t_block) + sizeof(t_zone);
+        total_size = size + BLOCK_OFFSET + sizeof(t_zone);
         aligned_size = round_up_to_page_size(total_size);
 
         ptr = mmap(NULL, aligned_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
@@ -137,7 +140,7 @@ void    *malloc(size_t size)
         } 
         
         zone = (t_zone *)ptr;
-        block = (t_block *)(ptr + sizeof(t_zone));
+        block = (t_block *)(char *)(ptr + sizeof(t_zone));
 
         zone->head = block;
         zone->total_size = aligned_size;
@@ -153,7 +156,8 @@ void    *malloc(size_t size)
             large_head = zone;
         else
             append_zone(&large_head, zone);
-        return ((void *)(block + 1));
+        ft_printf("Dirección que se devuelve a la aplicación: %p\n", (void *)((char *)block + BLOCK_OFFSET));
+        return ((void *)((char *)block + BLOCK_OFFSET));
     }
     return (NULL);
 }
