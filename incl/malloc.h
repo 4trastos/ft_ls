@@ -46,6 +46,7 @@ extern t_zone           *small_head;
 extern t_zone           *large_head;
 extern pthread_mutex_t  g_malloc_mutex;
 extern int g_mutex_initialized;
+extern int state;
 
 //*** struct functions ***
 void    append_zone(t_zone **large_head, t_zone *zone);
@@ -59,6 +60,7 @@ void    *realloc(void *ptr, size_t size);
 
 //*** explicit functions ***
 void    show_alloc_mem(void);
+void    show_alloc_mem_ex(void);
 void    *create_new_zone(size_t size);
 void    split_block(t_block *block, size_t size);
 t_block *find_and_split_block(t_block *head, size_t size);

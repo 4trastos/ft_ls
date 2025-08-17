@@ -67,6 +67,7 @@ void    *malloc(size_t size)
     size_t          aligned_size;
     size_t          total_size;
     unsigned char   *ptr;
+    char            *env_var;
 
     if (size == 0)
         return (NULL);
@@ -77,6 +78,10 @@ void    *malloc(size_t size)
             return (NULL);
         g_mutex_initialized = 1;
     }
+
+    env_var = getenv("MALLOC_VERBOSE");
+    if (env_var != NULL)
+        state = 1;
 
     pthread_mutex_lock(&g_malloc_mutex);
     
@@ -93,10 +98,7 @@ void    *malloc(size_t size)
         }
             
         block = find_and_split_block(tiny_head->head, size);
-        // ft_printf("Dirección de zone       (malloc)  : %p\n", zone);
-        // ft_printf("Dirección de block      (malloc)  : %p\n", block);
-        // ft_printf("Tamaño de bytes         (malloc)  : %d\n", size);
-
+        
         if (!block)
         {
             zone = create_new_zone(TINY_MAX_SIZE);
@@ -111,7 +113,12 @@ void    *malloc(size_t size)
         {
             block->is_free = false;
             block->type = TINY;
-            ft_printf("Dirección que se devuelve a la aplicación: %p\n", (void *)((char *)block + BLOCK_OFFSET));
+            if (state)
+            {
+                ft_printf("Dirección de zone       (malloc)  : %p\n", zone);
+                ft_printf("Dirección de block      (malloc)  : %p\n", (void *)((char *)block + BLOCK_OFFSET));
+                ft_printf("Tamaño de bytes         (malloc)  : %d\n", block->size);
+            }
             pthread_mutex_unlock(&g_malloc_mutex);
             return ((void *)((char *)block + BLOCK_OFFSET));
         }
@@ -145,7 +152,11 @@ void    *malloc(size_t size)
         {
             block->is_free = false;
             block->type = SMALL;
-            ft_printf("Dirección que se devuelve a la aplicación: %p\n", (void *)((char *)block + BLOCK_OFFSET));
+            {
+                ft_printf("Dirección de zone       (malloc)  : %p\n", zone);
+                ft_printf("Dirección de block      (malloc)  : %p\n", (void *)((char *)block + BLOCK_OFFSET));
+                ft_printf("Tamaño de bytes         (malloc)  : %d\n", block->size);
+            }
             pthread_mutex_unlock(&g_malloc_mutex);
             return ((void *)((char *)block + BLOCK_OFFSET));
         }
@@ -182,7 +193,12 @@ void    *malloc(size_t size)
             large_head = zone;
         else
             append_zone(&large_head, zone);
-        ft_printf("Dirección que se devuelve a la aplicación: %p\n", (void *)((char *)block + BLOCK_OFFSET));
+        if (state)
+        {
+            ft_printf("Dirección de zone       (malloc)  : %p\n", zone);
+            ft_printf("Dirección de block      (malloc)  : %p\n", (void *)((char *)block + BLOCK_OFFSET));
+            ft_printf("Tamaño de bytes         (malloc)  : %d\n", block->size);
+        }
         pthread_mutex_unlock(&g_malloc_mutex);
         return ((void *)((char *)block + BLOCK_OFFSET));
     }

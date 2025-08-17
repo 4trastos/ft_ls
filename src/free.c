@@ -106,14 +106,12 @@ void    free(void *ptr)
         exit(1);
     }
 
-    // ft_printf("Dirección de zone                 (free): %p\n", zone);
-    //ft_printf("Dirección que recibe free               : %p\n", ptr);
     data_block = (t_block *)((char *)ptr - BLOCK_OFFSET);
-    //ft_printf("Dirección del bloque de metadatos (free): %p\n", data_block);
-    //ft_printf("Tamaño de bytes                   (free): %d\n", data_block->size);
     if (data_block->is_free == true)
     {
         print_str("*** Error: double free detected ***\n");
+        if (state)
+            ft_printf("Dirección del puntero que ya ha sido liberado : %p\n", data_block);
         pthread_mutex_unlock(&g_malloc_mutex);
         exit(1);
     }
@@ -121,9 +119,6 @@ void    free(void *ptr)
     if (data_block->type == LARGE)
     {
         // 2. Desenlazar la zona de la lista y liberar (LARGE).
-        // ft_printf("Dirección de zone       (free)    : %p\n", zone);
-        // ft_printf("Dirección de data_block (free)    : %p\n", data_block);
-        // ft_printf("Tamaño de bytes         (free)    : %d\n", data_block->size);
         remove_large_zone(zone);
         if (munmap(zone, zone->total_size) == -1)
         {
@@ -131,12 +126,24 @@ void    free(void *ptr)
             pthread_mutex_unlock(&g_malloc_mutex);
             return;
         }
+        if (state)
+        {
+            ft_printf("Dirección de zone       (free)    : %p\n", zone);
+            ft_printf("Dirección de data_block (free)    : %p\n", data_block);
+            ft_printf("Tamaño de bytes         (free)    : %d\n", data_block->size);
+        }
         pthread_mutex_unlock(&g_malloc_mutex);
         return;
     }
     else
     {
         data_block->is_free = true;
+        if (state)
+        {
+            ft_printf("Dirección de zone       (free)    : %p\n", zone);
+            ft_printf("Dirección de data_block (free)    : %p\n", data_block);
+            ft_printf("Tamaño de bytes         (free)    : %d\n", data_block->size);
+        }
         
         // 3. Fusión de bloques adyacentes libres (Coalescencia)
         if (data_block->next != NULL && data_block->next->is_free == true)

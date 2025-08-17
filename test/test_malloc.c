@@ -17,8 +17,8 @@ int main(int argc, char **argv)
     show_alloc_mem();
 
     //ft_printf("##### REALLOC CON 25bytes más #####\n");
-    //str = realloc(str, (len + 25));
-    //show_alloc_mem();
+    str = realloc(str, (len + 25));
+    show_alloc_mem();
 
     //ft_printf("##### LIBERAMOS ELPUNTERO #####\n");
     free(str);
