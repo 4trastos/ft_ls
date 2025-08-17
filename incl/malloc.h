@@ -9,6 +9,7 @@
 # include <stdbool.h>
 # include <sys/mman.h>
 # include <errno.h>
+# include <pthread.h>
 
 # define BLOCK_OFFSET 32
 
@@ -40,9 +41,11 @@ typedef struct s_zone
     struct s_zone   *next; 
 }   t_zone;
 
-extern t_zone       *tiny_head;
-extern t_zone       *small_head;                         
-extern t_zone       *large_head;
+extern t_zone           *tiny_head;
+extern t_zone           *small_head;                         
+extern t_zone           *large_head;
+extern pthread_mutex_t  g_malloc_mutex;
+extern int g_mutex_initialized;
 
 //*** struct functions ***
 void    append_zone(t_zone **large_head, t_zone *zone);

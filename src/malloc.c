@@ -71,13 +71,25 @@ void    *malloc(size_t size)
     if (size == 0)
         return (NULL);
     
+    if (g_mutex_initialized == 0)
+    {
+        if (pthread_mutex_init(&g_malloc_mutex, NULL) != 0)
+            return (NULL);
+        g_mutex_initialized = 1;
+    }
+
+    pthread_mutex_lock(&g_malloc_mutex);
+    
     if (size <= TINY_MAX_SIZE)
     {
         if (!tiny_head)
         {
             zone = create_new_zone(TINY_MAX_SIZE);
             if (!zone)
+            {
+                pthread_mutex_unlock(&g_malloc_mutex);
                 return (NULL);
+            }
         }
             
         block = find_and_split_block(tiny_head->head, size);
@@ -89,7 +101,10 @@ void    *malloc(size_t size)
         {
             zone = create_new_zone(TINY_MAX_SIZE);
             if (!zone)
+            {
+                pthread_mutex_unlock(&g_malloc_mutex);
                 return (NULL);
+            }
             block = find_and_split_block(tiny_head->head, size);
         }
         if (block)
@@ -97,8 +112,10 @@ void    *malloc(size_t size)
             block->is_free = false;
             block->type = TINY;
             ft_printf("Dirección que se devuelve a la aplicación: %p\n", (void *)((char *)block + BLOCK_OFFSET));
+            pthread_mutex_unlock(&g_malloc_mutex);
             return ((void *)((char *)block + BLOCK_OFFSET));
         }
+        pthread_mutex_unlock(&g_malloc_mutex);
         return (NULL);
     }
     else if (size <= SMALL_MAX_SIZE)
@@ -107,7 +124,10 @@ void    *malloc(size_t size)
         {
             zone = create_new_zone(SMALL_MAX_SIZE);
             if (!zone)
+            {
+                pthread_mutex_unlock(&g_malloc_mutex);
                 return (NULL);
+            }
         }
 
         block = find_and_split_block(small_head->head, size);
@@ -115,7 +135,10 @@ void    *malloc(size_t size)
         {
             zone = create_new_zone(SMALL_MAX_SIZE);
             if (!zone)
+            {
+                pthread_mutex_unlock(&g_malloc_mutex);
                 return (NULL);
+            }
             block = find_and_split_block(small_head->head, size);
         }
         if (block)
@@ -123,8 +146,10 @@ void    *malloc(size_t size)
             block->is_free = false;
             block->type = SMALL;
             ft_printf("Dirección que se devuelve a la aplicación: %p\n", (void *)((char *)block + BLOCK_OFFSET));
+            pthread_mutex_unlock(&g_malloc_mutex);
             return ((void *)((char *)block + BLOCK_OFFSET));
         }
+        pthread_mutex_unlock(&g_malloc_mutex);
         return (NULL);
     }
     else
@@ -136,6 +161,7 @@ void    *malloc(size_t size)
         if (ptr == MAP_FAILED)
         {
             print_str("Error: malloc failed to allocate [SIZE] bytes");
+            pthread_mutex_unlock(&g_malloc_mutex);
             return (NULL);
         } 
         
@@ -157,6 +183,7 @@ void    *malloc(size_t size)
         else
             append_zone(&large_head, zone);
         ft_printf("Dirección que se devuelve a la aplicación: %p\n", (void *)((char *)block + BLOCK_OFFSET));
+        pthread_mutex_unlock(&g_malloc_mutex);
         return ((void *)((char *)block + BLOCK_OFFSET));
     }
     return (NULL);

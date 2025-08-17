@@ -8,11 +8,24 @@ void    *realloc(void *ptr, size_t size)
     t_block *aux_block;
     void    *new_ptr;
 
+    if (g_mutex_initialized == 0)
+    {
+        if (pthread_mutex_init(&g_malloc_mutex, NULL) != 0)
+            return (NULL);
+        g_mutex_initialized = 1;
+    }
+
+    pthread_mutex_lock(&g_malloc_mutex);
+
     if (!ptr)
+    {
+        pthread_mutex_unlock(&g_malloc_mutex);
         return (malloc(size));
+    }
     
     if (size == 0)
     {
+        pthread_mutex_unlock(&g_malloc_mutex);
         free(ptr);
         return (NULL);
     }
@@ -20,13 +33,17 @@ void    *realloc(void *ptr, size_t size)
     block = (t_block *)((char *)ptr - BLOCK_OFFSET);
     zone = find_zone_for_ptr(ptr);
     if (!zone)
+    {
+        pthread_mutex_unlock(&g_malloc_mutex);
         return (NULL);
+    }
     ft_printf("Dirección de zone       (realloc) : %p\n", zone);
     ft_printf("Dirección de block      (realloc) : %p\n", block);
     ft_printf("Tamaño de bytes         (realloc) : %d\n", size);
 
     if (block->type == LARGE)
     {
+        pthread_mutex_unlock(&g_malloc_mutex);
         new_ptr = malloc(size);
         if (!new_ptr)
             return (NULL);
@@ -46,10 +63,12 @@ void    *realloc(void *ptr, size_t size)
                 block->next = aux_block->next;
                 if (block->next != NULL)
                     block->next->prev = block;
+                pthread_mutex_unlock(&g_malloc_mutex);
                 return (ptr);
             }
             else
             {
+                pthread_mutex_unlock(&g_malloc_mutex);
                 new_ptr = malloc(size);
                 if (!new_ptr)
                     return (NULL);
@@ -87,5 +106,6 @@ void    *realloc(void *ptr, size_t size)
            } 
         }
     }
+    pthread_mutex_unlock(&g_malloc_mutex);
     return (ptr);
 }

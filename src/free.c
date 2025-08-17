@@ -95,22 +95,26 @@ void    free(void *ptr)
     if (!ptr)
         return;
     
+    pthread_mutex_lock(&g_malloc_mutex);
+    
     // 1. Encontrar el bloque de memoria y la zona a la que pertenece.
     zone = find_zone_for_ptr(ptr);
     if (!zone)
     {
         print_str("*** Error: double free detected or invalid pointer ***");
+        pthread_mutex_unlock(&g_malloc_mutex);
         exit(1);
     }
 
-    ft_printf("Dirección de zone       (free)          : %p\n", zone);
+    ft_printf("Dirección de zone                 (free): %p\n", zone);
     ft_printf("Dirección que recibe free               : %p\n", ptr);
     data_block = (t_block *)((char *)ptr - BLOCK_OFFSET);
     ft_printf("Dirección del bloque de metadatos (free): %p\n", data_block);
-    ft_printf("Tamaño de bytes         (free)          : %d\n", data_block->size);
+    ft_printf("Tamaño de bytes                   (free): %d\n", data_block->size);
     if (data_block->is_free == true)
     {
         print_str("*** Error: double free detected ***\n");
+        pthread_mutex_unlock(&g_malloc_mutex);
         exit(1);
     }
 
@@ -124,8 +128,10 @@ void    free(void *ptr)
         if (munmap(zone, zone->total_size) == -1)
         {
             print_str("Error: munmap failed for address");
+            pthread_mutex_unlock(&g_malloc_mutex);
             return;
         }
+        pthread_mutex_unlock(&g_malloc_mutex);
         return;
     }
     else
@@ -156,7 +162,10 @@ void    free(void *ptr)
         while (head_block != NULL)
         {
             if (head_block->is_free == false)
+            {
+                pthread_mutex_unlock(&g_malloc_mutex);
                 return;
+            }
             head_block = head_block->next;
         }
         
@@ -164,7 +173,9 @@ void    free(void *ptr)
         if (munmap(zone, zone->total_size) == -1)
         {
             print_str("Error: munmap failed for address");
+            pthread_mutex_unlock(&g_malloc_mutex);
             exit(1);
         }
+        pthread_mutex_unlock(&g_malloc_mutex);
     }
 }
