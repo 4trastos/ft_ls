@@ -106,11 +106,11 @@ void    free(void *ptr)
         exit(1);
     }
 
-    ft_printf("Dirección de zone                 (free): %p\n", zone);
-    ft_printf("Dirección que recibe free               : %p\n", ptr);
+    // ft_printf("Dirección de zone                 (free): %p\n", zone);
+    //ft_printf("Dirección que recibe free               : %p\n", ptr);
     data_block = (t_block *)((char *)ptr - BLOCK_OFFSET);
-    ft_printf("Dirección del bloque de metadatos (free): %p\n", data_block);
-    ft_printf("Tamaño de bytes                   (free): %d\n", data_block->size);
+    //ft_printf("Dirección del bloque de metadatos (free): %p\n", data_block);
+    //ft_printf("Tamaño de bytes                   (free): %d\n", data_block->size);
     if (data_block->is_free == true)
     {
         print_str("*** Error: double free detected ***\n");
@@ -121,9 +121,9 @@ void    free(void *ptr)
     if (data_block->type == LARGE)
     {
         // 2. Desenlazar la zona de la lista y liberar (LARGE).
-        ft_printf("Dirección de zone       (free)    : %p\n", zone);
-        ft_printf("Dirección de data_block (free)    : %p\n", data_block);
-        ft_printf("Tamaño de bytes         (free)    : %d\n", data_block->size);
+        // ft_printf("Dirección de zone       (free)    : %p\n", zone);
+        // ft_printf("Dirección de data_block (free)    : %p\n", data_block);
+        // ft_printf("Tamaño de bytes         (free)    : %d\n", data_block->size);
         remove_large_zone(zone);
         if (munmap(zone, zone->total_size) == -1)
         {

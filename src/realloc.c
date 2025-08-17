@@ -37,9 +37,9 @@ void    *realloc(void *ptr, size_t size)
         pthread_mutex_unlock(&g_malloc_mutex);
         return (NULL);
     }
-    ft_printf("Dirección de zone       (realloc) : %p\n", zone);
-    ft_printf("Dirección de block      (realloc) : %p\n", block);
-    ft_printf("Tamaño de bytes         (realloc) : %d\n", size);
+    // ft_printf("Dirección de zone       (realloc) : %p\n", zone);
+    // ft_printf("Dirección de block      (realloc) : %p\n", block);
+    // ft_printf("Tamaño de bytes         (realloc) : %d\n", size);
 
     if (block->type == LARGE)
     {

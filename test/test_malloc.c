@@ -16,14 +16,14 @@ int main(int argc, char **argv)
     str = malloc(len);
     show_alloc_mem();
 
-    ft_printf("##### REALLOC CON 25bytes más #####\n");
-    str = realloc(str, (len + 25));
-    show_alloc_mem();
+    //ft_printf("##### REALLOC CON 25bytes más #####\n");
+    //str = realloc(str, (len + 25));
+    //show_alloc_mem();
 
-    ft_printf("##### LIBERAMOS ELPUNTERO #####\n");
+    //ft_printf("##### LIBERAMOS ELPUNTERO #####\n");
     free(str);
-    ft_printf("##### LIBERAMOS EL MISMO PUNTERO #####\n");
-    free(str);
+    //ft_printf("##### LIBERAMOS EL MISMO PUNTERO #####\n");
+    //free(str);
 
     return (0);
 }

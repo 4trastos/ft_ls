@@ -93,9 +93,9 @@ void    *malloc(size_t size)
         }
             
         block = find_and_split_block(tiny_head->head, size);
-        ft_printf("Dirección de zone       (malloc)  : %p\n", zone);
-        ft_printf("Dirección de block      (malloc)  : %p\n", block);
-        ft_printf("Tamaño de bytes         (malloc)  : %d\n", size);
+        // ft_printf("Dirección de zone       (malloc)  : %p\n", zone);
+        // ft_printf("Dirección de block      (malloc)  : %p\n", block);
+        // ft_printf("Tamaño de bytes         (malloc)  : %d\n", size);
 
         if (!block)
         {
