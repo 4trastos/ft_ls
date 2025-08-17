@@ -1,5 +1,5 @@
 #include "../incl/malloc.h"
-#include "../incl/ft_printf.h"
+#include "../lib/ft_printf/ft_printf.h"
 
 
 int main(int argc, char **argv)

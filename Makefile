@@ -7,35 +7,41 @@ ifeq ($(HOSTTYPE),)
     HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
 
-SRC = src/malloc.c src/free.c src/realloc.c src/memory_zone.c lib/aux.c \
-      src/globals.c src/blocks.c lib/auxTwo.c
-
+SRC = src/malloc.c src/free.c src/realloc.c src/memory_zone.c src/aux.c \
+      src/globals.c src/blocks.c src/auxTwo.c
 OBJS = $(SRC:.c=.o)
+
+FT_PRINTF_DIR = lib/ft_printf
+FT_PRINTF = $(FT_PRINTF_DIR)/libftprintf.a
 
 TEST_EXEC = test_malloc_app
 TEST_SRC = test/test_malloc.c
 
-all: libft_malloc.so $(TEST_EXEC)
+all: $(FT_PRINTF) $(NAME) $(TEST_EXEC)
 
 libft_malloc.so: $(NAME)
 	@ln -sf $(NAME) libft_malloc.so
-FT_PRINTF = lib/libftprintf.a
 
 $(NAME): $(OBJS)
-	$(CC) -shared -o $(NAME) $(OBJS) $(FT_PRINTF)
+	$(CC) -shared -o $(NAME) $(OBJS) -L$(FT_PRINTF_DIR) -lftprintf
 
 $(TEST_EXEC): $(TEST_SRC) libft_malloc.so
 	$(CC) $(CFLAGS) $< -L. -lft_malloc -Wl,-rpath,'$$ORIGIN' -o $@
+
+$(FT_PRINTF):
+	@make -C $(FT_PRINTF_DIR)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	$(RM) $(OBJS) $(TEST_EXEC)
+	@make clean -C $(FT_PRINTF_DIR)
 
 fclean: clean
 	$(RM) $(NAME) libft_malloc.so
+	@make fclean -C $(FT_PRINTF_DIR)
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re $(FT_PRINTF)

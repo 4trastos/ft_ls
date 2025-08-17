@@ -1,6 +1,6 @@
 #define _GNU_SOURCE
 #include "../incl/malloc.h"
-#include "../incl/ft_printf.h"
+#include "../lib/ft_printf/ft_printf.h"
 
 size_t round_up_to_page_size(size_t size)
 {

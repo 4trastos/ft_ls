@@ -1,5 +1,5 @@
 #include "../incl/malloc.h"
-#include "../incl/ft_printf.h"
+#include "../lib/ft_printf/ft_printf.h"
 
 void    split_block(t_block *block, size_t size)
 {
