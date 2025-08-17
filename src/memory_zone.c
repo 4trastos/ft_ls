@@ -1,5 +1,5 @@
 #include "../incl/malloc.h"
-#include "../lib/ft_printf/ft_printf.h"
+#include "../lib/printf/ft_printf.h"
 
 void    show_alloc_mem(void)
 {

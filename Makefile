@@ -11,7 +11,7 @@ SRC = src/malloc.c src/free.c src/realloc.c src/memory_zone.c src/aux.c \
       src/globals.c src/blocks.c src/auxTwo.c
 OBJS = $(SRC:.c=.o)
 
-FT_PRINTF_DIR = lib/ft_printf
+FT_PRINTF_DIR = lib/printf
 FT_PRINTF = $(FT_PRINTF_DIR)/libftprintf.a
 
 TEST_EXEC = test_malloc_app
