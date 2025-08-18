@@ -11,18 +11,21 @@ int main(int argc, char **argv)
         ft_printf("Escribe el número de bytes : ==>>> ./test_malloc_app <bytes>\n");
         return (1);
     }
-    len = atoi(argv[1]);
+    //len = atoi(argv[1]);
+    len = ft_strlen(argv[1]);
 
     str = malloc(len);
     show_alloc_mem();
+    str = strcpy(str, argv[1]);
+    ft_printf("Esto es lo que hay guardado: %s\n", str);
+    show_alloc_mem_ex();
 
-    //ft_printf("##### REALLOC CON 25bytes más #####\n");
     str = realloc(str, (len + 25));
+    ft_printf("Esto es lo que hay guardado después de realloc: %s\n", str);
     show_alloc_mem();
+    show_alloc_mem_ex();
 
-    //ft_printf("##### LIBERAMOS ELPUNTERO #####\n");
     free(str);
-    //ft_printf("##### LIBERAMOS EL MISMO PUNTERO #####\n");
     //free(str);
 
     return (0);

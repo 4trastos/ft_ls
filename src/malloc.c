@@ -117,7 +117,7 @@ void    *malloc(size_t size)
             {
                 ft_printf("Dirección de zone       (malloc)  : %p\n", zone);
                 ft_printf("Dirección de block      (malloc)  : %p\n", (void *)((char *)block + BLOCK_OFFSET));
-                ft_printf("Tamaño de bytes         (malloc)  : %d\n", block->size);
+                ft_printf("Tamaño de bytes         (malloc)  : %u\n", (unsigned int)block->size);
             }
             pthread_mutex_unlock(&g_malloc_mutex);
             return ((void *)((char *)block + BLOCK_OFFSET));
@@ -155,7 +155,7 @@ void    *malloc(size_t size)
             {
                 ft_printf("Dirección de zone       (malloc)  : %p\n", zone);
                 ft_printf("Dirección de block      (malloc)  : %p\n", (void *)((char *)block + BLOCK_OFFSET));
-                ft_printf("Tamaño de bytes         (malloc)  : %d\n", block->size);
+                ft_printf("Tamaño de bytes         (malloc)  : %u\n", (unsigned int)block->size);
             }
             pthread_mutex_unlock(&g_malloc_mutex);
             return ((void *)((char *)block + BLOCK_OFFSET));
@@ -197,7 +197,7 @@ void    *malloc(size_t size)
         {
             ft_printf("Dirección de zone       (malloc)  : %p\n", zone);
             ft_printf("Dirección de block      (malloc)  : %p\n", (void *)((char *)block + BLOCK_OFFSET));
-            ft_printf("Tamaño de bytes         (malloc)  : %d\n", block->size);
+            ft_printf("Tamaño de bytes         (malloc)  : %u\n", (unsigned int)block->size);
         }
         pthread_mutex_unlock(&g_malloc_mutex);
         return ((void *)((char *)block + BLOCK_OFFSET));

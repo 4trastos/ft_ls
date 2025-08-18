@@ -130,7 +130,7 @@ void    free(void *ptr)
         {
             ft_printf("Dirección de zone       (free)    : %p\n", zone);
             ft_printf("Dirección de data_block (free)    : %p\n", data_block);
-            ft_printf("Tamaño de bytes         (free)    : %d\n", data_block->size);
+            ft_printf("Tamaño de bytes         (free)    : %u\n", (unsigned int)data_block->size);
         }
         pthread_mutex_unlock(&g_malloc_mutex);
         return;
@@ -142,7 +142,7 @@ void    free(void *ptr)
         {
             ft_printf("Dirección de zone       (free)    : %p\n", zone);
             ft_printf("Dirección de data_block (free)    : %p\n", data_block);
-            ft_printf("Tamaño de bytes         (free)    : %d\n", data_block->size);
+            ft_printf("Tamaño de bytes         (free)    : %u\n", (unsigned int)data_block->size);
         }
         
         // 3. Fusión de bloques adyacentes libres (Coalescencia)
