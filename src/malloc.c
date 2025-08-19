@@ -2,14 +2,13 @@
 #include "../incl/malloc.h"
 #include "../lib/printf/ft_printf.h"
 
-size_t round_up_to_page_size(size_t size)
+size_t round_up_to_page_size(size_t total_size)
 {
     size_t  page_size;
     size_t  num_pages;
 
     page_size = getpagesize();
-    num_pages = (size + page_size - 1) / page_size;
-
+    num_pages = (total_size + page_size - 1) / page_size;
     return (num_pages * page_size);
 }
 
@@ -96,7 +95,6 @@ void    *malloc(size_t size)
                 return (NULL);
             }
         }
-            
         block = find_and_split_block(tiny_head->head, size);
         
         if (!block)
@@ -115,9 +113,9 @@ void    *malloc(size_t size)
             block->type = TINY;
             if (state)
             {
-                ft_printf("Dirección de zone       (malloc)  : %p\n", zone);
-                ft_printf("Dirección de block      (malloc)  : %p\n", (void *)((char *)block + BLOCK_OFFSET));
-                ft_printf("Tamaño de bytes         (malloc)  : %u\n", (unsigned int)block->size);
+                ft_printf("Dirección de zone           (malloc)  : %p\n", zone);
+                ft_printf("Dirección libre al usuario  (malloc)  : %p\n", (void *)((char *)block + BLOCK_OFFSET));
+                ft_printf("Tamaño de bytes             (malloc)  : %u\n", (unsigned int)block->size);
             }
             pthread_mutex_unlock(&g_malloc_mutex);
             return ((void *)((char *)block + BLOCK_OFFSET));
@@ -152,10 +150,11 @@ void    *malloc(size_t size)
         {
             block->is_free = false;
             block->type = SMALL;
+            if (state)
             {
-                ft_printf("Dirección de zone       (malloc)  : %p\n", zone);
-                ft_printf("Dirección de block      (malloc)  : %p\n", (void *)((char *)block + BLOCK_OFFSET));
-                ft_printf("Tamaño de bytes         (malloc)  : %u\n", (unsigned int)block->size);
+                ft_printf("Dirección de zone           (malloc)  : %p\n", zone);
+                ft_printf("Dirección libre al usuario  (malloc)  : %p\n", (void *)((char *)block + BLOCK_OFFSET));
+                ft_printf("Tamaño de bytes             (malloc)  : %u\n", (unsigned int)block->size);
             }
             pthread_mutex_unlock(&g_malloc_mutex);
             return ((void *)((char *)block + BLOCK_OFFSET));
@@ -195,9 +194,9 @@ void    *malloc(size_t size)
             append_zone(&large_head, zone);
         if (state)
         {
-            ft_printf("Dirección de zone       (malloc)  : %p\n", zone);
-            ft_printf("Dirección de block      (malloc)  : %p\n", (void *)((char *)block + BLOCK_OFFSET));
-            ft_printf("Tamaño de bytes         (malloc)  : %u\n", (unsigned int)block->size);
+            ft_printf("Dirección de zone           (malloc)  : %p\n", zone);
+            ft_printf("Dirección libre al usuario  (malloc)  : %p\n", (void *)((char *)block + BLOCK_OFFSET));
+            ft_printf("Tamaño de bytes             (malloc)  : %u\n", (unsigned int)block->size);
         }
         pthread_mutex_unlock(&g_malloc_mutex);
         return ((void *)((char *)block + BLOCK_OFFSET));

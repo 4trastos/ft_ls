@@ -65,7 +65,7 @@ void    *create_new_zone(size_t size);
 void    split_block(t_block *block, size_t size);
 t_block *find_and_split_block(t_block *head, size_t size);
 t_zone  *find_zone_for_ptr(void *ptr);
-size_t  round_up_to_page_size(size_t size);
+size_t  round_up_to_page_size(size_t total_size);
 
 //*** auxiliary functions ***
 size_t  ft_strlen(char *str);

@@ -14,17 +14,32 @@ int main(int argc, char **argv)
     //len = atoi(argv[1]);
     len = ft_strlen(argv[1]);
 
+    ft_printf("\n ### 1. Reservamos memoria malloc : %u bytes solicitados\n", len);
     str = malloc(len);
-    show_alloc_mem();
+    //show_alloc_mem();
+    //ft_printf("Copiamos argv[1] en str : mide => %u bytes\n", len);
     str = strcpy(str, argv[1]);
-    ft_printf("Esto es lo que hay guardado: %s\n", str);
+    ft_printf("\n  ** Esto es lo que hay guardado: %s\n", str);
+    ft_printf("\n");
+    //show_alloc_mem_ex();
+
+    len = 3;
+    ft_printf("\n ### 2. REALLOC de : %u bytes\n", len);
+    str = realloc(str, len);
+    ft_printf("\n  ** Esto es lo que hay guardado después de realloc: %s\n", str);
+    ft_printf("\n");
+    //show_alloc_mem();
     show_alloc_mem_ex();
 
-    str = realloc(str, (len + 25));
-    ft_printf("Esto es lo que hay guardado después de realloc: %s\n", str);
-    show_alloc_mem();
+    len = 34456;
+    ft_printf("\n ### 3. REALLOC de : %u bytes\n", len);
+    str = realloc(str, len);
+    ft_printf("\n  ** Esto es lo que hay guardado después de realloc: %s\n", str);
+    ft_printf("\n");
+    //show_alloc_mem();
     show_alloc_mem_ex();
 
+    ft_printf("\n ### 3. FREE de  : %s \n", str);
     free(str);
     //free(str);
 
