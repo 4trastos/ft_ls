@@ -88,8 +88,11 @@ void    *realloc(void *ptr, size_t size)
                 new_ptr = malloc(size);
                 if (!new_ptr)
                     return (NULL);
+                pthread_mutex_lock(&g_malloc_mutex);
                 ft_memcpy(new_ptr, ptr, block->size);
+                pthread_mutex_unlock(&g_malloc_mutex);
                 free(ptr);
+                pthread_mutex_lock(&g_malloc_mutex);
                 if (state)
                 {
                     ft_printf("Dirección de zone       (realloc) : %p\n", zone);
@@ -98,6 +101,7 @@ void    *realloc(void *ptr, size_t size)
                     ft_printf("Nueva dirección block   (realloc) : %p\n", new_ptr);
                     ft_printf("Nuevo tamaño de block   (realloc) : %u\n", (unsigned int)size);
                 }
+                pthread_mutex_unlock(&g_malloc_mutex);
                 return(new_ptr);
             }
     
