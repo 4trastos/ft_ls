@@ -74,6 +74,31 @@ void    show_alloc_mem_ex(void)
                 block_end = (void *)((char *)aux_block + BLOCK_OFFSET + aux_block->size);
 
                 ft_printf("%p - %p : %u bytes\n", block_start, block_end, (unsigned int)aux_block->size);
+                if (aux_block->is_free == false)
+                {   
+                    data_ptr = (unsigned char*)((char *)aux_block + BLOCK_OFFSET);  
+                
+                    x = 0;
+                    while (x < aux_block->size)
+                    {
+                        ft_printf("%p: ", &data_ptr[x]);
+                        
+                        y = 0;
+                        while (y < 16 && x < aux_block->size)
+                        {
+                            unsigned char byte = data_ptr[x];
+                            count = 0;
+                            
+                            if (byte < 16)
+                                ft_putchar('0', &count);
+                            ft_hexa(byte, "0123456789abcdef", &count);
+                            ft_putchar(' ', &count);
+                            x++;
+                            y++;
+                        }
+                        ft_printf("\n");
+                    }
+                }
                 total_bytes = total_bytes + aux_block->size;
                 aux_block = aux_block->next;
             }
@@ -96,6 +121,31 @@ void    show_alloc_mem_ex(void)
                 block_end = (void *)((char *)aux_block + BLOCK_OFFSET + aux_block->size);
 
                 ft_printf("%p - %p : %u bytes\n", block_start, block_end, (unsigned int)aux_block->size);
+                if (aux_block->is_free == false)
+                {   
+                    data_ptr = (unsigned char*)((char *)aux_block + BLOCK_OFFSET);  
+                
+                    x = 0;
+                    while (x < aux_block->size)
+                    {
+                        ft_printf("%p: ", &data_ptr[x]);
+                        
+                        y = 0;
+                        while (y < 16 && x < aux_block->size)
+                        {
+                            unsigned char byte = data_ptr[x];
+                            count = 0;
+                            
+                            if (byte < 16)
+                                ft_putchar('0', &count);
+                            ft_hexa(byte, "0123456789abcdef", &count);
+                            ft_putchar(' ', &count);
+                            x++;
+                            y++;
+                        }
+                        ft_printf("\n");
+                    }
+                }
                 total_bytes = total_bytes + aux_block->size;
                 aux_block = aux_block->next;
             }

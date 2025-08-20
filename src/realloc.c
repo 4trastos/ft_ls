@@ -6,6 +6,7 @@ void    *realloc(void *ptr, size_t size)
     t_zone *zone;
     t_block *block;
     t_block *aux_block;
+    size_t  aligned_size;
     void    *new_ptr;
     char    *env_var;
 
@@ -66,19 +67,17 @@ void    *realloc(void *ptr, size_t size)
         if (size > block->size)
         {
             if (block->next != NULL && block->next->is_free == true &&
-                (block->size + block->next->size + BLOCK_OFFSET) > size) 
+                (block->size + block->next->size + BLOCK_OFFSET) >= size) 
             {
-                aux_block = block->next;
-                block->size = block->size + aux_block->size + BLOCK_OFFSET;
-                block->next = aux_block->next;
-                if (block->next != NULL)
-                    block->next->prev = block;
+                aligned_size = (size + sizeof(void *) - 1) & ~(sizeof(void *) - 1);
+                block->next->size = block->next->size - block->size;
+                block->size = block->size + aligned_size;
                 if (state)
                 {
                     ft_printf("Dirección de zone       (realloc) : %p\n", zone);
                     ft_printf("Dirección de block      (realloc) : %p\n", block);
                     ft_printf("Tamaño de block         (realloc) : %u\n", (unsigned int)block->size);
-                    ft_printf("Nuevo tamaño de block   (realloc) : %u\n", (unsigned int)size);
+                    ft_printf("Nuevo tamaño de block   (realloc) : %u\n", (unsigned int)aligned_size);
                 }
                 pthread_mutex_unlock(&g_malloc_mutex);
                 return (ptr);

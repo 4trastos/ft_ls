@@ -11,19 +11,25 @@ int main(int argc, char **argv)
         ft_printf("Escribe el número de bytes : ==>>> ./test_malloc_app <bytes>\n");
         return (1);
     }
+
+    ft_printf("\n##############################################################\n");
+    ft_printf("##############################################################\n");
+    ft_printf("##############################################################\n");
+    ft_printf("##############################################################\n");
     //len = atoi(argv[1]);
     len = ft_strlen(argv[1]);
 
     ft_printf("\n ### 1. Reservamos memoria malloc : %u bytes solicitados\n", len);
     str = malloc(len);
-    //show_alloc_mem();
+    show_alloc_mem_ex();
     //ft_printf("Copiamos argv[1] en str : mide => %u bytes\n", len);
     str = strcpy(str, argv[1]);
     ft_printf("\n  ** Esto es lo que hay guardado: %s\n", str);
     ft_printf("\n");
+    show_alloc_mem_ex();
     //show_alloc_mem_ex();
 
-    len = 3;
+    len = 17;
     ft_printf("\n ### 2. REALLOC de : %u bytes\n", len);
     str = realloc(str, len);
     ft_printf("\n  ** Esto es lo que hay guardado después de realloc: %s\n", str);
