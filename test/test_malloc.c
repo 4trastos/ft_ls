@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     //show_alloc_mem();
     show_alloc_mem_ex();
 
-    len = 34456;
+    len = 344;
     ft_printf("\n ### 3. REALLOC de : %u bytes\n", len);
     str = realloc(str, len);
     ft_printf("\n  ** Esto es lo que hay guardado después de realloc: %s\n", str);

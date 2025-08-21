@@ -66,12 +66,13 @@ void    *realloc(void *ptr, size_t size)
     {
         if (size > block->size)
         {
+            aligned_size = (size + sizeof(void *) - 1) & ~(sizeof(void *) - 1);
+
             if (block->next != NULL && block->next->is_free == true &&
-                (block->size + block->next->size + BLOCK_OFFSET) >= size) 
+                (block->size + block->next->size + BLOCK_OFFSET) >= aligned_size) 
             {
-                aligned_size = (size + sizeof(void *) - 1) & ~(sizeof(void *) - 1);
-                block->next->size = block->next->size - block->size;
                 block->size = block->size + aligned_size;
+                block->next->size = block->next->size - block->size;
                 if (state)
                 {
                     ft_printf("Dirección de zone       (realloc) : %p\n", zone);
@@ -108,20 +109,20 @@ void    *realloc(void *ptr, size_t size)
         }
         else if (size < block->size)
         {
-            if (block->size - size > BLOCK_OFFSET)
+            aligned_size = (size + sizeof(void *) - 1) & ~(sizeof(void *) - 1);
+
+            if (block->size >= aligned_size + BLOCK_OFFSET)
            {
-               aux_block = (t_block*)((char *)block + BLOCK_OFFSET + size);
+               aux_block = (t_block*)((char *)block + BLOCK_OFFSET + aligned_size);
    
-               aux_block->size = block->size - size - BLOCK_OFFSET;
+               aux_block->size = block->size - aligned_size - BLOCK_OFFSET;
                aux_block->is_free = true;
                aux_block->type = block->type;
                aux_block->next = block->next;
                aux_block->prev = block;
-   
                if (aux_block->next != NULL)
                    aux_block->next->prev = aux_block;
-               
-               block->size = size;
+               block->size = aligned_size;
                block->next = aux_block;
    
                if (aux_block->next != NULL &&  aux_block->next->is_free == true)
@@ -131,7 +132,7 @@ void    *realloc(void *ptr, size_t size)
                    if (aux_block->next != NULL)
                        aux_block->next->prev = aux_block;
                }
-           } 
+           }
         }
     }
     if (state)
@@ -139,7 +140,7 @@ void    *realloc(void *ptr, size_t size)
         ft_printf("Dirección de zone       (realloc) : %p\n", zone);
         ft_printf("Dirección de block      (realloc) : %p\n", block);
         ft_printf("Tamaño de block         (realloc) : %u\n", (unsigned int)block->size);
-        ft_printf("Nuevo tamaño de block   (realloc) : %u\n", (unsigned int)size);
+        ft_printf("Nuevo tamaño de block   (realloc) : %u\n", (unsigned int)aligned_size);
     }
     pthread_mutex_unlock(&g_malloc_mutex);
     return (ptr);
