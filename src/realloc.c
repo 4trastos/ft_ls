@@ -10,13 +10,6 @@ void    *realloc(void *ptr, size_t size)
     void    *new_ptr;
     char    *env_var;
     
-    pthread_mutex_lock(&g_malloc_mutex);
-
-    env_var = getenv("MALLOC_VERBOSE");
-    if (env_var != NULL)
-        state = 1;
-    
-
     if (!ptr)
     {
         pthread_mutex_unlock(&g_malloc_mutex);
@@ -29,7 +22,13 @@ void    *realloc(void *ptr, size_t size)
         free(ptr);
         return (NULL);
     }
+    
+    pthread_mutex_lock(&g_malloc_mutex);
 
+    env_var = getenv("MALLOC_VERBOSE");
+    if (env_var != NULL)
+        state = 1;
+    
     block = (t_block *)((char *)ptr - BLOCK_OFFSET);
     zone = find_zone_for_ptr(ptr);
     if (!zone)
@@ -48,9 +47,7 @@ void    *realloc(void *ptr, size_t size)
         new_ptr = malloc(size);
         if (!new_ptr)
             return (NULL);
-        pthread_mutex_lock(&g_malloc_mutex);
         ft_memcpy(new_ptr, ptr, (size < block->size) ? size : block->size);
-        pthread_mutex_unlock(&g_malloc_mutex);
         free(ptr);
         if (state)
             ft_printf("DEBUG: Realloc en un block LARGE. Nueva dirección: %p.Nuevo tamaño: %u\n", new_ptr, (unsigned int)size);
@@ -79,9 +76,7 @@ void    *realloc(void *ptr, size_t size)
                 new_ptr = malloc(size);
                 if (!new_ptr)
                     return (NULL);
-                pthread_mutex_lock(&g_malloc_mutex);
                 ft_memcpy(new_ptr, ptr, block->size);
-                pthread_mutex_unlock(&g_malloc_mutex);
                 free(ptr);
                 pthread_mutex_lock(&g_malloc_mutex);
                 if (state)

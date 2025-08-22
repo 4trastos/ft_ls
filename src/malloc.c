@@ -78,13 +78,13 @@ void    *malloc(size_t size)
     char            *env_var;
 
     pthread_once(&g_mutex_once, mutex_init);
+    
+    if (size == 0)
+        return (NULL);
 
     env_var = getenv("MALLOC_VERBOSE");
     if (env_var != NULL)
         state = 1;
-    
-    if (size == 0)
-        return (NULL);
 
     pthread_mutex_lock(&g_malloc_mutex);
     
