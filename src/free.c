@@ -102,6 +102,8 @@ void    free(void *ptr)
     if (!zone)
     {
         print_str("*** Error: double free detected or invalid pointer ***");
+        if (state)
+            ft_printf("DEBUG: Error: double free detected or invalid pointer: %p\n", ptr);
         pthread_mutex_unlock(&g_malloc_mutex);
         exit(1);
     }
@@ -111,7 +113,7 @@ void    free(void *ptr)
     {
         print_str("*** Error: double free detected ***\n");
         if (state)
-            ft_printf("Dirección del puntero que ya ha sido liberado : %p\n", data_block);
+            ft_printf("DEBUG: Error: double free detected: %p\n", ptr);
         pthread_mutex_unlock(&g_malloc_mutex);
         exit(1);
     }
@@ -127,11 +129,7 @@ void    free(void *ptr)
             return;
         }
         if (state)
-        {
-            ft_printf("Dirección de zone       (free)    : %p\n", zone);
-            ft_printf("Dirección de data_block (free)    : %p\n", data_block);
-            ft_printf("Tamaño de bytes         (free)    : %u\n", (unsigned int)data_block->size);
-        }
+            ft_printf("DEBUG Free en block LARGE. Dirección liberada: %p\n", ptr);
         pthread_mutex_unlock(&g_malloc_mutex);
         return;
     }
@@ -139,11 +137,7 @@ void    free(void *ptr)
     {
         data_block->is_free = true;
         if (state)
-        {
-            ft_printf("Dirección de zone       (free)    : %p\n", zone);
-            ft_printf("Dirección de data_block (free)    : %p\n", data_block);
-            ft_printf("Tamaño de bytes         (free)    : %u\n", (unsigned int)data_block->size);
-        }
+            ft_printf("DEBUG: Free en block TINY/SMALL. Dirección liberada: %p\n", ptr);
         
         // 3. Fusión de bloques adyacentes libres (Coalescencia)
         if (data_block->next != NULL && data_block->next->is_free == true)

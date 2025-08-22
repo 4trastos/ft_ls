@@ -1,7 +1,58 @@
 #include "../incl/malloc.h"
 #include "../lib/printf/ft_printf.h"
 
-#define TEST_ARRAY_SIZE 10
+int main(int argc, char **argv)
+{
+    char *str;
+    size_t  len;
+
+    if (argc < 2)
+    {
+        ft_printf("Escribe el número de bytes : ==>>> ./test_malloc_app <bytes>\n");
+        return (1);
+    }
+
+    ft_printf("\n##############################################################\n");
+    ft_printf("##############################################################\n");
+    ft_printf("##############################################################\n");
+    ft_printf("##############################################################\n");
+    //len = atoi(argv[1]);
+    len = ft_strlen(argv[1]);
+
+    ft_printf("\n ### 1. Reservamos memoria malloc : %u bytes solicitados\n", len);
+    str = malloc(len);
+    show_alloc_mem_ex();
+    //ft_printf("Copiamos argv[1] en str : mide => %u bytes\n", len);
+    str = strcpy(str, argv[1]);
+    ft_printf("\n  ** Esto es lo que hay guardado: %s\n", str);
+    ft_printf("\n");
+    show_alloc_mem_ex();
+    //show_alloc_mem_ex();
+
+    len = 17;
+    ft_printf("\n ### 2. REALLOC de : %u bytes\n", len);
+    str = realloc(str, len);
+    ft_printf("\n  ** Esto es lo que hay guardado después de realloc: %s\n", str);
+    ft_printf("\n");
+    //show_alloc_mem();
+    show_alloc_mem_ex();
+
+    len = 344;
+    ft_printf("\n ### 3. REALLOC de : %u bytes\n", len);
+    str = realloc(str, len);
+    ft_printf("\n  ** Esto es lo que hay guardado después de realloc: %s\n", str);
+    ft_printf("\n");
+    //show_alloc_mem();
+    show_alloc_mem_ex();
+
+    ft_printf("\n ### 3. FREE de  : %s \n", str);
+    free(str);
+    //free(str);
+
+    return (0);
+}
+
+/* #define TEST_ARRAY_SIZE 10000
 #define NUM_THREADS 5
 
 static void ft_memset(void *s, int c, size_t n) {
@@ -65,8 +116,8 @@ int main(int argc, char **argv) {
     }
 
     int test_num = atoi(argv[1]);
-    char        *ptr1, *ptr2;
-    size_t      i;
+    char *ptr1, *ptr2;
+    size_t i;
 
     switch (test_num) {
         case 1:
@@ -260,4 +311,4 @@ int main(int argc, char **argv) {
             break;
     }
     return 0;
-}
+} */

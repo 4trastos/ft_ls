@@ -112,11 +112,8 @@ void    *malloc(size_t size)
             block->is_free = false;
             block->type = TINY;
             if (state)
-            {
-                ft_printf("Dirección de zone           (malloc)  : %p\n", zone);
-                ft_printf("Dirección libre al usuario  (malloc)  : %p\n", (void *)((char *)block + BLOCK_OFFSET));
-                ft_printf("Tamaño de bytes             (malloc)  : %u\n", (unsigned int)block->size);
-            }
+                ft_printf("DEBUG: Malloc en block TINY. Dirección Zone: %p, Dirección block: %p. Tamaño block: %u\n", zone,
+                    (void *)((char *)block + BLOCK_OFFSET), (unsigned int)block->size);
             pthread_mutex_unlock(&g_malloc_mutex);
             return ((void *)((char *)block + BLOCK_OFFSET));
         }
@@ -151,11 +148,8 @@ void    *malloc(size_t size)
             block->is_free = false;
             block->type = SMALL;
             if (state)
-            {
-                ft_printf("Dirección de zone           (malloc)  : %p\n", zone);
-                ft_printf("Dirección libre al usuario  (malloc)  : %p\n", (void *)((char *)block + BLOCK_OFFSET));
-                ft_printf("Tamaño de bytes             (malloc)  : %u\n", (unsigned int)block->size);
-            }
+                ft_printf("DEBUG: Malloc en block SMALL. Dirección Zone: %p, Dirección block: %p. Tamaño block: %u\n", zone,
+                    (void *)((char *)block + BLOCK_OFFSET), (unsigned int)block->size);
             pthread_mutex_unlock(&g_malloc_mutex);
             return ((void *)((char *)block + BLOCK_OFFSET));
         }
@@ -193,11 +187,8 @@ void    *malloc(size_t size)
         else
             append_zone(&large_head, zone);
         if (state)
-        {
-            ft_printf("Dirección de zone           (malloc)  : %p\n", zone);
-            ft_printf("Dirección libre al usuario  (malloc)  : %p\n", (void *)((char *)block + BLOCK_OFFSET));
-            ft_printf("Tamaño de bytes             (malloc)  : %u\n", (unsigned int)block->size);
-        }
+            ft_printf("DEBUG: Malloc en block LARGE. Dirección Zone: %p, Dirección block: %p. Tamaño block: %u\n", zone,
+                (void *)((char *)block + BLOCK_OFFSET), (unsigned int)block->size);
         pthread_mutex_unlock(&g_malloc_mutex);
         return ((void *)((char *)block + BLOCK_OFFSET));
     }
