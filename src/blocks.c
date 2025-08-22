@@ -19,13 +19,13 @@ void    split_block(t_block *block, size_t size)
 
         // Enlazar el nuevo bloque a la lista
         new_block->next = block->next;
+        new_block->prev = block;
 
         if (new_block->next != NULL)
             new_block->next->prev = new_block;
         
         block->size = size;
         block->next = new_block;
-        new_block->prev = block;
     }
     return;
 }

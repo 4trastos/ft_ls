@@ -2,6 +2,15 @@
 #include "../incl/malloc.h"
 #include "../lib/printf/ft_printf.h"
 
+static void mutex_init(void)
+{
+    if (pthread_mutex_init(&g_malloc_mutex, NULL) != 0)
+    {
+        ft_printf("Error: pthread_mutex_init failed\n");
+        exit(1);
+    }
+}
+
 size_t round_up_to_page_size(size_t total_size)
 {
     size_t  page_size;
@@ -68,19 +77,14 @@ void    *malloc(size_t size)
     unsigned char   *ptr;
     char            *env_var;
 
-    if (size == 0)
-        return (NULL);
-    
-    if (g_mutex_initialized == 0)
-    {
-        if (pthread_mutex_init(&g_malloc_mutex, NULL) != 0)
-            return (NULL);
-        g_mutex_initialized = 1;
-    }
+    pthread_once(&g_mutex_once, mutex_init);
 
     env_var = getenv("MALLOC_VERBOSE");
     if (env_var != NULL)
         state = 1;
+    
+    if (size == 0)
+        return (NULL);
 
     pthread_mutex_lock(&g_malloc_mutex);
     

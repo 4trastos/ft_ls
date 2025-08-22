@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
     }
 
     int test_num = atoi(argv[1]);
-    char        *ptr1, *ptr2;
+    char        *ptr1, *ptr2, *ptr3;
     size_t      i;
 
     switch (test_num) {
@@ -169,17 +169,20 @@ int main(int argc, char **argv) {
         case 7:
             // Test 7: Realloc para crecer en su lugar (coalescencia)
             ft_printf("\n***************************************************\n");
-            ft_printf("--- Ejecutando Test 7: Realloc para crecer en su lugar ---\n\n");
+            ft_printf("--- Ejecutando Test 7: Realloc para crecer en su lugar (coalescencia) ---\n\n");
             ptr1 = malloc(50); // Primer bloque
             show_alloc_mem();
             ptr2 = malloc(50); // Segundo bloque
             show_alloc_mem();
+            ptr3 = malloc(20);
+            show_alloc_mem();
             free(ptr2);
-            ft_printf("Asignamos dos bloques, liberamos el segundo. Reasignando el primero para que crezca...\n");
+            ft_printf("Asignamos 3 bloques, liberamos el segundo. Reasignando el primero para que crezca...\n");
             ptr1 = realloc(ptr1, 120); // Debería caber en el espacio de 50 + 50
             show_alloc_mem();
             ft_printf("Dirección del puntero después de realloc: %p (debería ser la misma que la original)\n", (void*)ptr1);
             free(ptr1);
+            free(ptr3);
             ft_printf("Test 7 completado. Si el puntero no ha cambiado, el crecimiento en su lugar funciona.\n");
             break;
         case 8:
@@ -199,26 +202,29 @@ int main(int argc, char **argv) {
             // Test 9: Realloc entre zonas
             ft_printf("\n***************************************************\n");
             ft_printf("--- Ejecutando Test 9: Realloc entre zonas ---\n\n");
-            // Caso 1: SMALL a LARGE
+            ft_printf("\n// Caso 1: TINY a LARGE //\n\n");
             ptr1 = malloc(100); // Bloque SMALL
             show_alloc_mem();
             ft_memset(ptr1, 'A', 100);
-            show_alloc_mem();
-            ft_printf("Reasignando de SMALL a LARGE...\n");
+            show_alloc_mem_ex();
+            ft_printf("Copiamos 100 bytes de 'A' en ptr1 : %s\n", ptr1);
+            ft_printf("Reasignando de TINY a LARGE...\n\n");
             ptr2 = realloc(ptr1, 100000); // 100 KB
-            show_alloc_mem();
-            ft_printf("Puntero original (SMALL): %p | Nuevo puntero (LARGE): %p\n", (void*)ptr1, (void*)ptr2);
-            show_alloc_mem();
+            show_alloc_mem_ex();
+            ft_printf("Puntero original (TINY): %p | Nuevo puntero (LARGE): %p\n", (void*)ptr1, (void*)ptr2);
             free(ptr2);
+            ft_printf("\n");
 
-            // Caso 2: LARGE a SMALL
+            ft_printf("\n// Caso 1: LARGE a TINY //\n\n");
             ptr1 = malloc(100000); // Bloque LARGE
             show_alloc_mem();
             ft_memset(ptr1, 'B', 100000);
-            ft_printf("Reasignando de LARGE a SMALL...\n");
+            show_alloc_mem_ex();
+            ft_printf("Copiamos 100000 bytes de 'B' en  ptr1: '%s'\n", ptr1);
+            ft_printf("Reasignando de LARGE a TINY...\n");
             ptr2 = realloc(ptr1, 100);
-            show_alloc_mem();
-            ft_printf("Puntero original (LARGE): %p | Nuevo puntero (SMALL): %p\n", (void*)ptr1, (void*)ptr2);
+            show_alloc_mem_ex();
+            ft_printf("Puntero original (TINY): %p | Nuevo puntero (SMALL): %p\n", (void*)ptr1, (void*)ptr2);
             free(ptr2);
             ft_printf("Test 9 completado. Si los punteros cambian y no hay crashes, el realloc entre zonas funciona.\n");
             break;

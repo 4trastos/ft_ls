@@ -9,19 +9,13 @@ void    *realloc(void *ptr, size_t size)
     size_t  aligned_size;
     void    *new_ptr;
     char    *env_var;
-
-    if (g_mutex_initialized == 0)
-    {
-        if (pthread_mutex_init(&g_malloc_mutex, NULL) != 0)
-            return (NULL);
-        g_mutex_initialized = 1;
-    }
+    
+    pthread_mutex_lock(&g_malloc_mutex);
 
     env_var = getenv("MALLOC_VERBOSE");
     if (env_var != NULL)
         state = 1;
     
-    pthread_mutex_lock(&g_malloc_mutex);
 
     if (!ptr)
     {
@@ -54,7 +48,9 @@ void    *realloc(void *ptr, size_t size)
         new_ptr = malloc(size);
         if (!new_ptr)
             return (NULL);
+        pthread_mutex_lock(&g_malloc_mutex);
         ft_memcpy(new_ptr, ptr, (size < block->size) ? size : block->size);
+        pthread_mutex_unlock(&g_malloc_mutex);
         free(ptr);
         if (state)
             ft_printf("DEBUG: Realloc en un block LARGE. Nueva dirección: %p.Nuevo tamaño: %u\n", new_ptr, (unsigned int)size);
