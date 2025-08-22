@@ -19,16 +19,19 @@ void    show_alloc_mem(void)
             aux_block = aux_zone->head;
             while (aux_block != NULL)
             {
-                block_start = (void *)((char *)aux_block + BLOCK_OFFSET);
-                block_end = (void *)((char *)aux_block + BLOCK_OFFSET + aux_block->size);
-
-                ft_printf("%p - %p : %u bytes\n", block_start, block_end, (unsigned int)aux_block->size);
-                total_bytes = total_bytes + aux_block->size;
+                if (aux_block->is_free == false)
+                {
+                    block_start = (void *)((char *)aux_block + BLOCK_OFFSET);
+                    block_end = (void *)((char *)aux_block + BLOCK_OFFSET + aux_block->size);
+    
+                    ft_printf("%p - %p : %u bytes\n", block_start, block_end, (unsigned int)aux_block->size);
+                    total_bytes = total_bytes + aux_block->size;
+                }
                 aux_block = aux_block->next;
             }
             aux_zone = aux_zone->next;
         }
-        ft_printf("Total : %d bytes\n", total_bytes);
+        ft_printf("Total : %u bytes\n", (unsigned int)total_bytes);
     }
 
     total_bytes = 0;
@@ -41,16 +44,19 @@ void    show_alloc_mem(void)
             aux_block = aux_zone->head;
             while (aux_block != NULL)
             {
-                block_start = (void *)((char *)aux_block + BLOCK_OFFSET);
-                block_end = (void *)((char *)aux_block + BLOCK_OFFSET + aux_block->size);
-
-                ft_printf("%p - %p : %u bytes\n", block_start, block_end, (unsigned int)aux_block->size);
-                total_bytes = total_bytes + aux_block->size;
+                if (aux_block->is_free == false)
+                {
+                    block_start = (void *)((char *)aux_block + BLOCK_OFFSET);
+                    block_end = (void *)((char *)aux_block + BLOCK_OFFSET + aux_block->size);
+    
+                    ft_printf("%p - %p : %u bytes\n", block_start, block_end, (unsigned int)aux_block->size);
+                    total_bytes = total_bytes + aux_block->size;
+                }
                 aux_block = aux_block->next;
             }
             aux_zone = aux_zone->next;
         }
-        ft_printf("Total : %d bytes\n", total_bytes);
+        ft_printf("Total : %u bytes\n", (unsigned int)total_bytes);
     }
 
     total_bytes = 0;
@@ -63,11 +69,14 @@ void    show_alloc_mem(void)
             aux_block = aux_zone->head;
             while (aux_block != NULL)
             {
-                block_start = (void *)((char *)aux_block + BLOCK_OFFSET);
-                block_end = (void *)((char *)aux_block + BLOCK_OFFSET + aux_block->size);
-
-                ft_printf("%p - %p : %u bytes\n", block_start, block_end, (unsigned int)aux_block->size);
-                total_bytes = total_bytes + aux_block->size;
+                if (aux_block->is_free == false)
+                {
+                    block_start = (void *)((char *)aux_block + BLOCK_OFFSET);
+                    block_end = (void *)((char *)aux_block + BLOCK_OFFSET + aux_block->size);
+    
+                    ft_printf("%p - %p : %u bytes\n", block_start, block_end, (unsigned int)aux_block->size);
+                    total_bytes = total_bytes + aux_block->size;
+                }
                 aux_block = aux_block->next;
             }
             aux_zone = aux_zone->next;

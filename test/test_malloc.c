@@ -71,7 +71,8 @@ int main(int argc, char **argv) {
     switch (test_num) {
         case 1:
             // Test 1: Asignaciones y liberaciones aleatorias (fragmentación)
-            ft_printf("--- Ejecutando Test 1: Malloc/Free aleatorios ---\n");
+            ft_printf("\n*************************************************\n");
+            ft_printf("--- Ejecutando Test 1: Malloc/Free aleatorios ---\n\n");
             char *ptr_array[TEST_ARRAY_SIZE];
             ft_printf("Realizando %d asignaciones...\n", TEST_ARRAY_SIZE);
             for (i = 0; i < TEST_ARRAY_SIZE; i++) {
@@ -90,10 +91,11 @@ int main(int argc, char **argv) {
             break;
         case 2:
             // Test 2: malloc(0) y free(NULL)
-            ft_printf("--- Ejecutando Test 2: malloc(0) y free(NULL) ---\n");
+            ft_printf("\n***************************************************\n");
+            ft_printf("--- Ejecutando Test 2: malloc(0) y free(NULL) ---\n\n");
             ptr1 = malloc(0);
             show_alloc_mem();
-            ft_printf("malloc(0) devolvio: %p\n", (void*)ptr1);
+            ft_printf("malloc(0) devolvio: %p\n", ptr1);
             show_alloc_mem();
             ft_printf("Llamando a free(NULL)...\n");
             show_alloc_mem();
@@ -104,7 +106,8 @@ int main(int argc, char **argv) {
             break;
         case 3:
             // Test 3: Doble free
-            ft_printf("--- Ejecutando Test 3: Doble free ---\n");
+            ft_printf("\n***************************************************\n");
+            ft_printf("--- Ejecutando Test 3: Doble free ---\n\n");
             ptr1 = malloc(50);
             show_alloc_mem();
             ft_printf("Asignado un bloque y lo liberamos.\n");
@@ -115,7 +118,8 @@ int main(int argc, char **argv) {
             break;
         case 4:
             // Test 4: Uso despues de free
-            ft_printf("--- Ejecutando Test 4: Uso despues de free ---\n");
+            ft_printf("\n***************************************************\n");
+            ft_printf("--- Ejecutando Test 4: Uso despues de free ---\n\n");
             ptr1 = malloc(20);
             show_alloc_mem();
             strcpy(ptr1, "Hola mundo!");
@@ -126,12 +130,12 @@ int main(int argc, char **argv) {
             ft_printf("Test 4 completado (No se tiene que ver este mensaje).\n");
             break;
         case 5:
-            // Test 5: Malloc LARGE
-            ft_printf("--- Ejecutando Test 5: Malloc LARGE ---\n");
+            // Test 5: Malloc 
+            ft_printf("\n***************************************************\n");
+            ft_printf("--- Ejecutando Test 5: Malloc LARGE ---\n\n");
             ptr1 = malloc(1000000); // 1 MB
-            show_alloc_mem();
             if (ptr1) {
-                ft_printf("Asignado un bloque LARGE. Direccion: %p\n", (void*)ptr1);
+                ft_printf("Se ha asignado un bloque LARGE. Direccion: %p\n", (void*)ptr1);
                 show_alloc_mem();
                 free(ptr1);
                 ft_printf("Test 5 completado. Si el bloque se muestra y luego se libera, es correcto.\n");
@@ -141,7 +145,8 @@ int main(int argc, char **argv) {
             break;
         case 6:
             // Test 6: Realloc con valores limite
-            ft_printf("--- Ejecutando Test 6: Realloc con valores limite ---\n");
+            ft_printf("\n***************************************************\n");
+            ft_printf("--- Ejecutando Test 6: Realloc con valores limite ---\n\n");
             ft_printf("Probando realloc(NULL, 50)...\n");
             ptr1 = realloc(NULL, 50);
             if (ptr1)
@@ -163,7 +168,8 @@ int main(int argc, char **argv) {
             break;
         case 7:
             // Test 7: Realloc para crecer en su lugar (coalescencia)
-            ft_printf("--- Ejecutando Test 7: Realloc para crecer en su lugar ---\n");
+            ft_printf("\n***************************************************\n");
+            ft_printf("--- Ejecutando Test 7: Realloc para crecer en su lugar ---\n\n");
             ptr1 = malloc(50); // Primer bloque
             show_alloc_mem();
             ptr2 = malloc(50); // Segundo bloque
@@ -178,7 +184,8 @@ int main(int argc, char **argv) {
             break;
         case 8:
             // Test 8: Realloc para encogerse y dividir el bloque
-            ft_printf("--- Ejecutando Test 8: Realloc para encogerse ---\n");
+            ft_printf("\n***************************************************\n");
+            ft_printf("--- Ejecutando Test 8: Realloc para encogerse ---\n\n");
             ptr1 = malloc(200);
             show_alloc_mem();
             ft_printf("Asignamos un bloque grande (200 bytes). Ahora lo reducimos a 50 bytes.\n");
@@ -190,7 +197,8 @@ int main(int argc, char **argv) {
             break;
         case 9:
             // Test 9: Realloc entre zonas
-            ft_printf("--- Ejecutando Test 9: Realloc entre zonas ---\n");
+            ft_printf("\n***************************************************\n");
+            ft_printf("--- Ejecutando Test 9: Realloc entre zonas ---\n\n");
             // Caso 1: SMALL a LARGE
             ptr1 = malloc(100); // Bloque SMALL
             show_alloc_mem();
@@ -215,8 +223,9 @@ int main(int argc, char **argv) {
             ft_printf("Test 9 completado. Si los punteros cambian y no hay crashes, el realloc entre zonas funciona.\n");
             break;
         case 10:
-            // Test 10: Llenado de memoria y liberaciones selectivas
-            ft_printf("--- Ejecutando Test 10: Llenado de memoria y liberaciones selectivas ---\n");
+            // Test 10: Llenado de memoria y liberaciones 
+            ft_printf("\n***************************************************\n");
+            ft_printf("--- Ejecutando Test 10: Llenado de memoria y liberaciones selectivas ---\n\n");
             char *chunks[500];
             ft_printf("Llenando la memoria con bloques de 16 bytes...\n");
             for (i = 0; i < 500; i++) {
@@ -239,8 +248,9 @@ int main(int argc, char **argv) {
             break;
         case 11:
             // Test 11: Test de estres multihilo
-            ft_printf("--- Ejecutando Test 11: Test de estres multihilo ---\n");
-            ft_printf("Creando %d hilos para realizar operaciones aleatorias.\n", NUM_THREADS);
+            ft_printf("\n***************************************************\n");
+            ft_printf("--- Ejecutando Test 11: Test de estres multihilo ---\n\n");
+            ft_printf("Creando %d hilos para realizar operaciones aleatorias.\n\n", NUM_THREADS);
             pthread_t threads[NUM_THREADS];
             for (i = 0; i < NUM_THREADS; i++) {
                 if (pthread_create(&threads[i], NULL, thread_test_func, (void *)(long)i) != 0) {
