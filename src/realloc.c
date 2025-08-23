@@ -10,21 +10,15 @@ void    *realloc(void *ptr, size_t size)
     void    *new_ptr;
     char    *env_var;
     
-    if (!ptr)
-    {
-        pthread_mutex_unlock(&g_malloc_mutex);
+    if (!ptr)   
         return (malloc(size));
-    }
     
     if (size == 0)
     {
-        pthread_mutex_unlock(&g_malloc_mutex);
         free(ptr);
         return (NULL);
     }
     
-    pthread_mutex_lock(&g_malloc_mutex);
-
     env_var = getenv("MALLOC_VERBOSE");
     if (env_var != NULL)
         state = 1;
@@ -32,10 +26,7 @@ void    *realloc(void *ptr, size_t size)
     block = (t_block *)((char *)ptr - BLOCK_OFFSET);
     zone = find_zone_for_ptr(ptr);
     if (!zone)
-    {
-        pthread_mutex_unlock(&g_malloc_mutex);
         return (NULL);
-    }
 
     aligned_size = (size + sizeof(void *) -1) & ~(sizeof(void *) - 1);
     if (state)
@@ -43,7 +34,6 @@ void    *realloc(void *ptr, size_t size)
 
     if (block->type == LARGE)
     {
-        pthread_mutex_unlock(&g_malloc_mutex);
         new_ptr = malloc(size);
         if (!new_ptr)
             return (NULL);
@@ -67,24 +57,20 @@ void    *realloc(void *ptr, size_t size)
                     block->next->prev = block;
                 if (state)
                     ft_printf("DEBUG: Realloc TINY/SMALL. Ampliando in-place. Nuevo tamaño del block: %u\n", (unsigned int)block->size);
-                pthread_mutex_unlock(&g_malloc_mutex);
                 return (ptr);
             }
             else
             {
-                pthread_mutex_unlock(&g_malloc_mutex);
                 new_ptr = malloc(size);
                 if (!new_ptr)
                     return (NULL);
                 ft_memcpy(new_ptr, ptr, block->size);
                 free(ptr);
-                pthread_mutex_lock(&g_malloc_mutex);
+                
                 if (state)
                     ft_printf("DEBUG: Realloc TINY/SMALL. Nueva Asignación. Nueva dirección: %p. Nuevo tamaño: %u\n", new_ptr, (unsigned int)size);
-                pthread_mutex_unlock(&g_malloc_mutex);
                 return(new_ptr);
             }
-    
         }
         else if (aligned_size <= block->size)
         {
@@ -114,6 +100,5 @@ void    *realloc(void *ptr, size_t size)
     }
     if (state)
         ft_printf("DEBUG: Realloc finalizado. Dirección: %p, Tamaño final: %u\n", ptr, (unsigned int)block->size);
-    pthread_mutex_unlock(&g_malloc_mutex);
     return (ptr);
 }

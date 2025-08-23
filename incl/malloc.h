@@ -44,8 +44,6 @@ typedef struct s_zone
 extern t_zone           *tiny_head;
 extern t_zone           *small_head;                         
 extern t_zone           *large_head;
-extern pthread_mutex_t  g_malloc_mutex;
-extern pthread_once_t   g_mutex_once;
 extern int state;
 
 //*** struct functions ***

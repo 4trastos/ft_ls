@@ -95,8 +95,6 @@ void    free(void *ptr)
     if (!ptr)
         return;
     
-    pthread_mutex_lock(&g_malloc_mutex);
-    
     // 1. Encontrar el bloque de memoria y la zona a la que pertenece.
     zone = find_zone_for_ptr(ptr);
     if (!zone)
@@ -104,7 +102,6 @@ void    free(void *ptr)
         print_str("*** Error: double free detected or invalid pointer ***");
         if (state)
             ft_printf("DEBUG: Error: double free detected or invalid pointer: %p\n", ptr);
-        pthread_mutex_unlock(&g_malloc_mutex);
         exit(1);
     }
 
@@ -114,7 +111,6 @@ void    free(void *ptr)
         print_str("*** Error: double free detected ***\n");
         if (state)
             ft_printf("DEBUG: Error: double free detected: %p\n", ptr);
-        pthread_mutex_unlock(&g_malloc_mutex);
         exit(1);
     }
 
@@ -124,13 +120,11 @@ void    free(void *ptr)
         remove_large_zone(zone);
         if (munmap(zone, zone->total_size) == -1)
         {
-            print_str("Error: munmap failed for address");
-            pthread_mutex_unlock(&g_malloc_mutex);
+            print_str("Error: munmap failed for address");  
             return;
         }
         if (state)
             ft_printf("DEBUG Free en block LARGE. Dirección liberada: %p\n", ptr);
-        pthread_mutex_unlock(&g_malloc_mutex);
         return;
     }
     else
@@ -163,10 +157,7 @@ void    free(void *ptr)
         while (head_block != NULL)
         {
             if (head_block->is_free == false)
-            {
-                pthread_mutex_unlock(&g_malloc_mutex);
                 return;
-            }
             head_block = head_block->next;
         }
         
@@ -174,9 +165,7 @@ void    free(void *ptr)
         if (munmap(zone, zone->total_size) == -1)
         {
             print_str("Error: munmap failed for address");
-            pthread_mutex_unlock(&g_malloc_mutex);
             exit(1);
         }
-        pthread_mutex_unlock(&g_malloc_mutex);
     }
 }

@@ -21,17 +21,17 @@ void    *realloc(void *ptr, size_t size)
     if (env_var != NULL)
         state = 1;
     
-    pthread_mutex_lock(&g_malloc_mutex);
+    
 
     if (!ptr)
     {
-        pthread_mutex_unlock(&g_malloc_mutex);
+        
         return (malloc(size));
     }
     
     if (size == 0)
     {
-        pthread_mutex_unlock(&g_malloc_mutex);
+        
         free(ptr);
         return (NULL);
     }
@@ -40,13 +40,13 @@ void    *realloc(void *ptr, size_t size)
     zone = find_zone_for_ptr(ptr);
     if (!zone)
     {
-        pthread_mutex_unlock(&g_malloc_mutex);
+        
         return (NULL);
     }
 
     if (block->type == LARGE)
     {
-        pthread_mutex_unlock(&g_malloc_mutex);
+        
         new_ptr = malloc(size);
         if (!new_ptr)
             return (NULL);
@@ -80,20 +80,20 @@ void    *realloc(void *ptr, size_t size)
                     ft_printf("Tamaño de block         (realloc) : %u\n", (unsigned int)block->size);
                     ft_printf("Nuevo tamaño de block   (realloc) : %u\n", (unsigned int)aligned_size);
                 }
-                pthread_mutex_unlock(&g_malloc_mutex);
+                
                 return (ptr);
             }
             else
             {
-                pthread_mutex_unlock(&g_malloc_mutex);
+                
                 new_ptr = malloc(size);
                 if (!new_ptr)
                     return (NULL);
-                pthread_mutex_lock(&g_malloc_mutex);
+                
                 ft_memcpy(new_ptr, ptr, block->size);
-                pthread_mutex_unlock(&g_malloc_mutex);
+                
                 free(ptr);
-                pthread_mutex_lock(&g_malloc_mutex);
+                
                 if (state)
                 {
                     ft_printf("Dirección de zone       (realloc) : %p\n", zone);
@@ -102,7 +102,7 @@ void    *realloc(void *ptr, size_t size)
                     ft_printf("Nueva dirección block   (realloc) : %p\n", new_ptr);
                     ft_printf("Nuevo tamaño de block   (realloc) : %u\n", (unsigned int)size);
                 }
-                pthread_mutex_unlock(&g_malloc_mutex);
+                
                 return(new_ptr);
             }
     
@@ -142,6 +142,6 @@ void    *realloc(void *ptr, size_t size)
         ft_printf("Tamaño de block         (realloc) : %u\n", (unsigned int)block->size);
         ft_printf("Nuevo tamaño de block   (realloc) : %u\n", (unsigned int)aligned_size);
     }
-    pthread_mutex_unlock(&g_malloc_mutex);
+    
     return (ptr);
 }

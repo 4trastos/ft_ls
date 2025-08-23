@@ -2,15 +2,6 @@
 #include "../incl/malloc.h"
 #include "../lib/printf/ft_printf.h"
 
-static void mutex_init(void)
-{
-    if (pthread_mutex_init(&g_malloc_mutex, NULL) != 0)
-    {
-        ft_printf("Error: pthread_mutex_init failed\n");
-        exit(1);
-    }
-}
-
 size_t round_up_to_page_size(size_t total_size)
 {
     size_t  page_size;
@@ -76,8 +67,6 @@ void    *malloc(size_t size)
     size_t          total_size;
     unsigned char   *ptr;
     char            *env_var;
-
-    pthread_once(&g_mutex_once, mutex_init);
     
     if (size == 0)
         return (NULL);
@@ -85,8 +74,6 @@ void    *malloc(size_t size)
     env_var = getenv("MALLOC_VERBOSE");
     if (env_var != NULL)
         state = 1;
-
-    pthread_mutex_lock(&g_malloc_mutex);
     
     if (size <= TINY_MAX_SIZE)
     {
@@ -95,7 +82,7 @@ void    *malloc(size_t size)
             zone = create_new_zone(TINY_MAX_SIZE);
             if (!zone)
             {
-                pthread_mutex_unlock(&g_malloc_mutex);
+                
                 return (NULL);
             }
         }
@@ -106,7 +93,7 @@ void    *malloc(size_t size)
             zone = create_new_zone(TINY_MAX_SIZE);
             if (!zone)
             {
-                pthread_mutex_unlock(&g_malloc_mutex);
+                
                 return (NULL);
             }
             block = find_and_split_block(tiny_head->head, size);
@@ -118,10 +105,10 @@ void    *malloc(size_t size)
             if (state)
                 ft_printf("DEBUG: Malloc en block TINY. Dirección Zone: %p, Dirección block: %p. Tamaño block: %u\n", zone,
                     (void *)((char *)block + BLOCK_OFFSET), (unsigned int)block->size);
-            pthread_mutex_unlock(&g_malloc_mutex);
+            
             return ((void *)((char *)block + BLOCK_OFFSET));
         }
-        pthread_mutex_unlock(&g_malloc_mutex);
+        
         return (NULL);
     }
     else if (size <= SMALL_MAX_SIZE)
@@ -131,7 +118,7 @@ void    *malloc(size_t size)
             zone = create_new_zone(SMALL_MAX_SIZE);
             if (!zone)
             {
-                pthread_mutex_unlock(&g_malloc_mutex);
+                
                 return (NULL);
             }
         }
@@ -142,7 +129,7 @@ void    *malloc(size_t size)
             zone = create_new_zone(SMALL_MAX_SIZE);
             if (!zone)
             {
-                pthread_mutex_unlock(&g_malloc_mutex);
+                
                 return (NULL);
             }
             block = find_and_split_block(small_head->head, size);
@@ -154,10 +141,10 @@ void    *malloc(size_t size)
             if (state)
                 ft_printf("DEBUG: Malloc en block SMALL. Dirección Zone: %p, Dirección block: %p. Tamaño block: %u\n", zone,
                     (void *)((char *)block + BLOCK_OFFSET), (unsigned int)block->size);
-            pthread_mutex_unlock(&g_malloc_mutex);
+            
             return ((void *)((char *)block + BLOCK_OFFSET));
         }
-        pthread_mutex_unlock(&g_malloc_mutex);
+        
         return (NULL);
     }
     else
@@ -169,7 +156,6 @@ void    *malloc(size_t size)
         if (ptr == MAP_FAILED)
         {
             print_str("Error: malloc failed to allocate [SIZE] bytes");
-            pthread_mutex_unlock(&g_malloc_mutex);
             return (NULL);
         } 
         
@@ -193,7 +179,7 @@ void    *malloc(size_t size)
         if (state)
             ft_printf("DEBUG: Malloc en block LARGE. Dirección Zone: %p, Dirección block: %p. Tamaño block: %u\n", zone,
                 (void *)((char *)block + BLOCK_OFFSET), (unsigned int)block->size);
-        pthread_mutex_unlock(&g_malloc_mutex);
+        
         return ((void *)((char *)block + BLOCK_OFFSET));
     }
     return (NULL);

@@ -11,42 +11,6 @@ static void ft_memset(void *s, int c, size_t n) {
     }
 }
 
-// Función que será ejecutada por cada hilo
-void *thread_test_func(void *arg) {
-    char *ptrs[100];
-    //int i;
-
-    // Realizar un bucle de asignaciones y liberaciones aleatorias
-    for (int j = 0; j < 100; j++) {
-        // Asignar un bloque de tamaño aleatorio
-        ptrs[j] = malloc(rand() % 2048 + 1);
-        if (ptrs[j]) {
-            // Llenar el bloque con un valor para verificar la integridad
-            ft_memset(ptrs[j], 'A' + (long)arg, rand() % 2048 + 1);
-        }
-    }
-    
-    // Reasignar la mitad de los bloques a un nuevo tamaño
-    for (int k = 0; k < 100; k++) {
-        if (ptrs[k] && rand() % 2 == 0) {
-            ptrs[k] = realloc(ptrs[k], rand() % 3000 + 1);
-            if (ptrs[k]) {
-                 ft_memset(ptrs[k], 'B' + (long)arg, rand() % 3000 + 1);
-            }
-        }
-    }
-
-    // Liberar todos los bloques
-    for (int l = 0; l < 100; l++) {
-        if (ptrs[l]) {
-            free(ptrs[l]);
-        }
-    }
-    ft_printf("Hilo %d completado.\n", (long)arg);
-    return NULL;
-}
-
-
 int main(int argc, char **argv) {
     if (argc < 2) {
         ft_printf("Uso: ./test_scenarios <numero_de_prueba>\n");
@@ -251,25 +215,6 @@ int main(int argc, char **argv) {
             ft_printf("show_alloc_mem despues de liberar todos los bloques:\n");
             show_alloc_mem();
             ft_printf("Test 10 completado. Si la memoria se ha liberado por completo al final, la coalescencia funciona.\n");
-            break;
-        case 11:
-            // Test 11: Test de estres multihilo
-            ft_printf("\n***************************************************\n");
-            ft_printf("--- Ejecutando Test 11: Test de estres multihilo ---\n\n");
-            ft_printf("Creando %d hilos para realizar operaciones aleatorias.\n\n", NUM_THREADS);
-            pthread_t threads[NUM_THREADS];
-            for (i = 0; i < NUM_THREADS; i++) {
-                if (pthread_create(&threads[i], NULL, thread_test_func, (void *)(long)i) != 0) {
-                    ft_printf("Error al crear el hilo %zu\n", i);
-                    return 1;
-                }
-            }
-            for (i = 0; i < NUM_THREADS; i++) {
-                pthread_join(threads[i], NULL);
-            }
-            ft_printf("Todos los hilos han terminado. show_alloc_mem despues de todas las operaciones:\n");
-            show_alloc_mem();
-            ft_printf("Test 11 completado. Si no hubo crashes, deadlocks, o corrupcion de memoria, tu solucion multihilo es robusta.\n");
             break;
         default:
             ft_printf("Numero de test no valido.\n");
