@@ -10,10 +10,10 @@ void    show_alloc_mem(void)
     size_t  total_bytes;
 
     total_bytes = 0;
-    if (tiny_head != NULL)
+    if (data.tiny_head != NULL)
     {
-        ft_printf("TINY : %p\n", (void*)tiny_head);
-        aux_zone = tiny_head;
+        ft_printf("TINY : %p\n", (void*)data.tiny_head);
+        aux_zone = data.tiny_head;
         while (aux_zone != NULL)
         {
             aux_block = aux_zone->head;
@@ -35,10 +35,10 @@ void    show_alloc_mem(void)
     }
 
     total_bytes = 0;
-    if (small_head != NULL)
+    if (data.small_head != NULL)
     {
-        ft_printf("SMALL : %p\n", (void*)small_head);
-        aux_zone = small_head;
+        ft_printf("SMALL : %p\n", (void*)data.small_head);
+        aux_zone = data.small_head;
         while (aux_zone != NULL)
         {
             aux_block = aux_zone->head;
@@ -60,10 +60,10 @@ void    show_alloc_mem(void)
     }
 
     total_bytes = 0;
-    if (large_head != NULL)
+    if (data.large_head != NULL)
     {
-        ft_printf("LARGE : %p\n", (void*)large_head);
-        aux_zone = large_head;
+        ft_printf("LARGE : %p\n", (void*)data.large_head);
+        aux_zone = data.large_head;
         while (aux_zone != NULL)
         {
             aux_block = aux_zone->head;

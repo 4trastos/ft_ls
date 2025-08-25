@@ -44,17 +44,17 @@ void    *create_new_zone(size_t len)
 
     if (len == TINY_MAX_SIZE)
     {
-        if (!tiny_head)
-            tiny_head = new_zone;
+        if (!data.tiny_head)
+            data.tiny_head = new_zone;
         else
-            append_tiny_zone(&tiny_head, new_zone);
+            append_tiny_zone(&data.tiny_head, new_zone);
     }
     else
     {
-        if (!small_head)
-            small_head = new_zone;
+        if (!data.small_head)
+            data.small_head = new_zone;
         else
-            append_small_zone(&small_head, new_zone);
+            append_small_zone(&data.small_head, new_zone);
     }
     return ((void *)(new_zone));
 } 
@@ -77,7 +77,7 @@ void    *malloc(size_t size)
     
     if (size <= TINY_MAX_SIZE)
     {
-        if (!tiny_head)
+        if (!data.tiny_head)
         {
             zone = create_new_zone(TINY_MAX_SIZE);
             if (!zone)
@@ -86,7 +86,7 @@ void    *malloc(size_t size)
                 return (NULL);
             }
         }
-        block = find_and_split_block(tiny_head->head, size);
+        block = find_and_split_block(data.tiny_head->head, size);
         
         if (!block)
         {
@@ -96,7 +96,7 @@ void    *malloc(size_t size)
                 
                 return (NULL);
             }
-            block = find_and_split_block(tiny_head->head, size);
+            block = find_and_split_block(data.tiny_head->head, size);
         }
         if (block)
         {
@@ -113,7 +113,7 @@ void    *malloc(size_t size)
     }
     else if (size <= SMALL_MAX_SIZE)
     {
-        if (!small_head)
+        if (!data.small_head)
         {
             zone = create_new_zone(SMALL_MAX_SIZE);
             if (!zone)
@@ -123,7 +123,7 @@ void    *malloc(size_t size)
             }
         }
 
-        block = find_and_split_block(small_head->head, size);
+        block = find_and_split_block(data.small_head->head, size);
         if (!block)
         {
             zone = create_new_zone(SMALL_MAX_SIZE);
@@ -132,7 +132,7 @@ void    *malloc(size_t size)
                 
                 return (NULL);
             }
-            block = find_and_split_block(small_head->head, size);
+            block = find_and_split_block(data.small_head->head, size);
         }
         if (block)
         {
@@ -172,10 +172,10 @@ void    *malloc(size_t size)
         block->next = NULL;
         block->prev = NULL;
 
-        if (!large_head)
-            large_head = zone;
+        if (!data.large_head)
+            data.large_head = zone;
         else
-            append_zone(&large_head, zone);
+            append_zone(&data.large_head, zone);
         if (state)
             ft_printf("DEBUG: Malloc en block LARGE. Dirección Zone: %p, Dirección block: %p. Tamaño block: %u\n", zone,
                 (void *)((char *)block + BLOCK_OFFSET), (unsigned int)block->size);

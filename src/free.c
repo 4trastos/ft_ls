@@ -5,7 +5,7 @@ t_zone  *find_zone_for_ptr(void *ptr)
 {
     t_zone  *current;
 
-    current = tiny_head;
+    current = data.tiny_head;
     while (current)
     {
         if ((void *)current <= ptr && ptr < (void *)((char *)current + current->total_size))
@@ -13,7 +13,7 @@ t_zone  *find_zone_for_ptr(void *ptr)
         current = current->next;
     }
 
-    current = small_head;
+    current = data.small_head;
     while (current)
     {
         if ((void *)current <= ptr && ptr < (void*)((char *)current + current->total_size))
@@ -21,7 +21,7 @@ t_zone  *find_zone_for_ptr(void *ptr)
         current = current->next;
     }
 
-    current = large_head;
+    current = data.large_head;
     while (current)
     {
         if ((void *)current <= ptr && ptr < (void*)((char *)current + current->total_size))
@@ -40,9 +40,9 @@ void    remove_zone_list(t_zone *zone_to_remove)
 
     prev = NULL;
     if (zone_to_remove->head->type == TINY)
-        current = tiny_head;
+        current = data.tiny_head;
     else
-        current = small_head;
+        current = data.small_head;
     while (current)
     {
         if (current == zone_to_remove)
@@ -52,9 +52,9 @@ void    remove_zone_list(t_zone *zone_to_remove)
             else
             {
                 if (zone_to_remove->head->type == TINY)
-                    tiny_head = current->next;
+                    data.tiny_head = current->next;
                 else
-                    small_head = current->next;
+                    data.small_head = current->next;
             }
             return;
         }
@@ -68,7 +68,7 @@ void    remove_large_zone(t_zone *zone_to_remove)
     t_zone  *current;
 
     prev = NULL;
-    current = large_head;
+    current = data.large_head;
 
     while (current)
     {
@@ -77,7 +77,7 @@ void    remove_large_zone(t_zone *zone_to_remove)
             if (prev)
                 prev->next = current->next;
             else
-                large_head = current->next;
+                data.large_head = current->next;
             return;
         }
         prev = current;

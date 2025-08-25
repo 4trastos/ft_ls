@@ -41,10 +41,15 @@ typedef struct s_zone
     struct s_zone   *next; 
 }   t_zone;
 
-extern t_zone           *tiny_head;
-extern t_zone           *small_head;                         
-extern t_zone           *large_head;
-extern int state;
+typedef struct s_malloc_data
+{
+    t_zone  *tiny_head;
+    t_zone  *small_head;
+    t_zone  *large_head;
+}   t_malloc_data;
+
+extern t_malloc_data    data;
+extern int              state;
 
 //*** struct functions ***
 void    append_zone(t_zone **large_head, t_zone *zone);
